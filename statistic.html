@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="./src/output.css" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="script.js"  defer></script>
+
+</head>
+<body class="w-[100vw] h-[100vh] dark:bg-black">
+    <!-- side bar -->
+    <div class="fixed flex flex-col top-0 left-0 z-50 lg:w-[25%] lg:h-[100vh] lg:top-0 lg:left-0 transform -translate-x-full transition-transform border-r border-gray-300 dark:border-gray-400/40 lg:-translate-x-0 ">
+        <!-- sidebar -->
+
+        <div class="flex gap-3 items-center mt-5 pb-5 justify-start pl-5 border-b border-gray-300 dark:border-gray-400/40">
+            <div class="w-10 h-10 p-2 dark:bg-white bg-black rounded-md flex items-center ">
+                <i data-lucide="notepad-text" class="text-white dark:text-black mx-auto  h-8" ></i>
+            </div>
+            <div>
+                <h1 class="font-bold text-lg dark:text-white">Habit Tracker</h1>
+                <h2 class="dark:text-white/60 font-light text-sm">Build Better Habits</h2>
+            </div>
+        </div>
+        <!-- buttons -->
+        <div class="flex flex-col items-start justify-center pl-5 pt-5 gap-5  tracking-wide">
+            <button id="today_habit" class="text-[1rem] dark:text-white font-semibold active:border active:bg-black py-2 pl-2 w-[90%] text-start rounded-[8px] flex gap-2 items-center "><i data-lucide="notepad-text" class="w-5"></i>Today's Habits</button>
+            <button id="statistic" class="text-[1rem] dark:text-white font-semibold active:border active:bg-black py-2 pl-2 w-[90%] text-start rounded-[8px] flex gap-2 items-center "><i class="w-5" data-lucide="chart-bar"></i>Statistic</button>
+            <button class="text-[1rem] dark:text-white font-semibold active:border active:bg-black py-2 pl-2 w-[90%] text-start rounded-[8px] flex gap-2 items-center "><i class="w-5" data-lucide="settings"></i>Settings</button>
+        </div>
+        <!-- add new habit -->
+         <div class="px-5">
+            <button class="flex gap-3 justify-start items-center w-[100%] mr-5 mt-5  py-3 pl-3  border-1 dark:border-gray-500/40 border-gray-200 rounded-[5px]">
+                <i data-lucide="plus" class="h-4 w-4 dark:text-white"></i>
+                <h1 id="test" class="font-semibold text-[1rem] dark:text-white">Add New Habit</h1>
+            </button>        
+         </div>
+        <div class="mt-auto mb-5">
+            <button id="dark_light" class="dark:text-white flex gap-3 mx-5">
+            <i data-lucide="sun"></i>
+            Light Mode
+            </button>        
+        </div>
+
+
+    </div>
+    <div class="lg:flex lg:justify-end">
+        <div class="lg:w-[75%] ">
+
+            <!-- title for large screen -->
+        <div class="flex justify-between items-center p-5 w-full border-b-1 dark:border-gray-500/40 border-b-black/20 lg:hidden" > 
+            <button class="">
+                <i data-lucide="menu" class="dark:text-white"></i>
+            </button>
+            <h1 class="text-lg font-semibold dark:text-white">Habit Tracker</h1>
+            <div></div>
+        </div>
+        <!-- Statistic -->
+        <div class="mx-5 my-5">
+            <h1 class="text-4xl font-bold dark:text-white">
+                Statistic
+            </h1>
+            <h2 class="text-lg dark:text-white/60">Track your progress and celebrate your achievements</h2>
+        </div>
+
+        <!-- The 4 divs grid -->
+
+        <div class="grid grid-rows-[repeat(2,1fr)] grid-cols-[repeat(2,1fr)] gap-6 h-64 mx-5" >
+            <div class="border dark:border-gray-500/40 rounded-xl p-5">
+                <div class="flex justify-between">
+                    <h1 class="text-md font-medium dark:text-white ">Total Habits</h1>
+                    <i data-lucide="target" class=" dark:text-white/70"></i>
+                </div>
+                <h1 class="text-2xl font-bold dark:text-white">0</h1>
+            </div>
+            <!-- trending up -->
+            <div class="border dark:border-gray-500/40 rounded-xl p-5">
+                <div class="flex justify-between">
+                    <h1 class="text-md font-medium dark:text-white">Completion Rate</h1>
+                    <i data-lucide="trending-up" class="dark:text-white/70"></i>
+                </div>
+                <h1 class="text-2xl font-bold dark:text-white">0.0%</h1>
+                
+
+            </div>
+
+            <!-- flame -->
+            <div class="border dark:border-gray-500/40 rounded-xl p-5">
+                <div class="flex justify-between">
+                    <h1 class="text-md font-medium dark:text-white">Longest Streak</h1>
+                    <i data-lucide="flame" class="text-orange-500"></i>
+                </div>
+                <h1 class="text-2xl font-bold dark:text-white">0</h1>
+            </div>
+
+            <!-- notepad -->
+            <div class="border dark:border-gray-500/40 rounded-xl p-5">
+                <div class="flex justify-between">
+                    <h1 class="text-md font-medium dark:text-white">Total Completion</h1>
+                    <i data-lucide="notepad-text" class="dark:text-white/70"></i>
+                </div>
+                <h1 class="text-2xl font-bold dark:text-white">0</h1>
+            </div>
+
+
+            <!-- notepad last grid -->
+            <div class="border dark:border-gray-500/40 col-span-2 p-5 gap-15 pb-20 flex flex-col">
+                <h1 class="dark:text-white text-2xl font-bold">Habit Performance</h1>
+                <div class="flex flex-col items-center justify-center gap-5 dark:text-white/70">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-notepad-text-icon lucide-notepad-text"><path d="M8 2v4"/><path d="M12 2v4"/><path d="M16 2v4"/><rect width="16" height="18" x="4" y="4" rx="2"/><path d="M8 10h6"/><path d="M8 14h8"/><path d="M8 18h5"/></svg>
+                    <p class="dark:text-white/60">No habits to analyze yet. Add some habits to see your statistic</p>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</body>
+</html>
