@@ -6,10 +6,18 @@
     <title>Document</title>
     <link href="./src/output.css" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="script.js" type="module" defer></script>
+    <script src="script.js"  defer></script>
+    <style>
+        #overlay{
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0,0,0,0.6);
+            z-index: 10;
+        }
 
+    </style>
 </head>
-<body class="w-[100vw] h-[100vh] dark:bg-black">
+<body class="w-[100vw] h-[100vh] dark:bg-black ">
     <!-- hidden div -->
     <div id="hidden_div" class="hidden top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] bg-white p-5 rounded-lg">
         <div class="flex flex-col gap-3">
@@ -46,7 +54,7 @@
                     <lable class="flex flex-col gap-3">Description</lable>
                 </div>
                 <div>
-                    <textarea id="input2" placeholder="Add any additional details..." class="h-20 px-2 py-2 border border-gray-500/40 w-full rounded-md"></textarea>
+                    <textarea placeholder="Add any additional details..." class="h-20 px-2 py-2 border border-gray-500/40 w-full rounded-md"></textarea>
                 </div>            
             </div>
             <!-- third div -->
@@ -54,7 +62,7 @@
                 <div>
                     <label class="flex flex-col gap-3" for="category">Categories</label>
                 </div>
-                <select id="input3" required class="h-10 px-2 border border-gray-500/40 w-full rounded-md" name="category" id="category">
+                <select required class="h-10 px-2 border border-gray-500/40 w-full rounded-md" name="category" id="category">
                     <option value="">Please select one!!</option>
                     <option value="Health">Health & Fitness</option>
                     <option value="productivity">Productivity</option>
@@ -79,9 +87,10 @@
          </div>
     </div>
 
+    
     <!-- side bar -->
-    <div class="fixed flex flex-col top-0 left-0 z-50 lg:w-[25%] lg:h-[100vh] lg:top-0 lg:left-0 transform -translate-x-full transition-transform border-r border-gray-300 dark:border-gray-400/40 lg:-translate-x-0 ">
-        <!-- title for small screen -->
+    <div class="fixed flex flex-col top-0 left-0 z-50 lg:w-[25vw] lg:h-[100vh] lg:top-0 lg:left-0 transform -translate-x-full transition-transform border-r border-gray-500/40 lg:-translate-x-0 ">
+        <!-- sidebar -->
 
         <div class="flex gap-3 items-center mt-5 pb-5 justify-start pl-5 border-b border-gray-300 dark:border-gray-400/40">
             <div class="w-10 h-10 p-2 dark:bg-white bg-black rounded-md flex items-center ">
@@ -94,17 +103,20 @@
         </div>
         <!-- buttons -->
         <div class="flex flex-col items-start justify-center pl-5 pt-5 gap-5  tracking-wide">
-            <button id="today_habit"  class="text-[1rem] dark:text-white font-semibold active:border active:bg-black py-2 pl-2 w-[90%] text-start rounded-[8px] flex gap-2 items-center "><i data-lucide="notepad-text" class="w-5"></i>Today's Habits</button>
+            <button id="today_habit" class="text-[1rem] dark:text-white font-semibold active:border active:bg-black py-2 pl-2 w-[90%] text-start rounded-[8px] flex gap-2 items-center "><i data-lucide="notepad-text" class="w-5"></i>Today's Habits</button>
             <button id="statistic" class="text-[1rem] dark:text-white font-semibold active:border active:bg-black py-2 pl-2 w-[90%] text-start rounded-[8px] flex gap-2 items-center "><i class="w-5" data-lucide="chart-bar"></i>Statistic</button>
             <button id="settings" class="text-[1rem] dark:text-white font-semibold active:border active:bg-black py-2 pl-2 w-[90%] text-start rounded-[8px] flex gap-2 items-center "><i class="w-5" data-lucide="settings"></i>Settings</button>
         </div>
         <!-- add new habit -->
-         <div id="add_new_habit_sidebar" class="px-5">
-            <button class="flex gap-3 justify-start items-center w-[100%] mr-5 mt-5  py-3 pl-3  border-1 dark:border-gray-500/40 border-gray-200 rounded-[5px]">
+        <!-- overlay -->
+        <div id="overlay_div" class="hidden"></div> 
+
+        <div id="add_new_habit_sidebar" class="px-5" id="add_habit">
+            <button class="flex gap-3 justify-start items-center w-[100%] mr-5 mt-5  py-3 pl-3  border-1 border-gray-500/40 rounded-[5px]">
                 <i data-lucide="plus" class="h-4 w-4 dark:text-white"></i>
-                <h1 class="font-semibold text-[1rem] dark:text-white">Add New Habit</h1>
+                <h1  class="font-semibold text-[1rem] dark:text-white">Add New Habit</h1>
             </button>        
-         </div>
+        </div>
         <div class="mt-auto mb-5">
             <button id="dark_light" class="dark:text-white flex gap-3 mx-5">
             <i data-lucide="sun"></i>
@@ -113,58 +125,55 @@
         </div>
 
     </div>
+    <!-- this is the main body -->
 
-    <!-- main bar -->
-    <div class="lg:flex lg:justify-end">
-        <div class="lg:w-[75%]" id="append_div">
+    <section class="lg:w-[75vw] lg:ml-auto flex justify-end flex-col gap-5 w-full">
+        <div class="px-10 py-5 border dark:border-gray-500/40 lg:hidden">
+            <div class="flex justify-between items-center">
+                <div>
+                    <i data-lucide="menu" class="dark:text-white w-4"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-semibold dark:text-white">Habit Tracker</h1>
+                </div>
+                <div>
 
-            <!-- title for small screen -->
-            <div class="flex justify-between items-center p-5 w-full border-b-1 dark:border-gray-500/40 border-b-black/20 lg:hidden" > 
-                <button class="mx-5">
-                    <i data-lucide="notepad-text" class="dark:text-white"></i>
-                </button>
-                <h1 class="text-lg dark:text-white font-semibold">Habit Tracker</h1>
-
-                <button id="add_new_habit_title" class="dark:text-black bg-black text-white text-sm dark:bg-white rounded-lg px-5 py-3 font-semibold flex items-center gap-3">
-                    <i data-lucide="plus" class="dark:text-black w-5"></i>
-                    Add Your Habit
-                </button>
-                
-                <div class="hidden lg:inline"></div>
+                </div>
             </div>
 
-
-            <div class="m-5">
-                <div class="flex flex-col items-start justify-start p-5
-                sm:flex-row sm:justify-between sm:items-center
-                ">
-                    <div>
-                        <h1 class="font-bold text-2xl lg:text-4xl dark:text-white">Today's Habits</h1>
-                        <h2 class="font-light text-xl text-black/50 dark:text-white/50">Monday, July 12, 2025</h2>
-                    </div>
-                    <div id="habitsContainer"></div>
-                    <div class="p-3 w-fit rounded-lg mt-4 border border-black/40 flex flex-col items-center">
-                        <p class="text-2xl font-bold dark:text-white">0/0</p>
-                        <p class="text-lg text-black/50 dark:text-white/50">Completed</p>
-                    </div>
-                </div>    
+        </div>
+        
+        <div class="flex w-full justify-between items-center px-10 py-5"> 
+            <div class="flex flex-col justify-center items-start">
+                <h1 class="dark:text-white font-bold text-4xl">Settings</h1>
+                <h2 class="dark:text-white/70 font-semibold text-lg">Manage your habits and preferences</h2>
             </div>
+            <button id="add_new_habit_title" class="dark:text-black bg-black text-white text-sm dark:bg-white rounded-lg px-5 py-3 font-semibold flex items-center gap-3">
+                <i data-lucide="plus" class="dark:text-black w-5"></i>
+                Add Your Habit
+            </button>
+        </div>
 
-            <div id="hide_if_add_habit_exist" class="m-5 flex flex-col gap-3" >
-                <div class="flex flex-col items-center gap-3 border border-black/10 rounded-xl p-5 m-5 dark:border-gray-500/40">
-                    <i data-lucide="notepad-text" class="text-white/50 w-8"></i>
-                    <h1 class="font-semibold text-xl text-black/60 dark:text-white/50">No habits yet</h1>
-                    <h1 class="font-semibold text-md text-black/60 text-center dark:text-white/50">Start Building better habits by adding your first one!</h1>
-                </div> 
-            </div>  
-        </div>        
+        <!-- the two divs -->
 
+        <div class="rounded-lg border border-gray-500/40  bg-card text-card-foreground shadow-2xs mx-10" data-v0-t="card">
+            <div class="flex flex-col space-y-1.5 p-6">
+                <h3 class="text-2xl font-semibold leading-none tracking-tight dark:text-white">Categories</h3>
+            </div>
+            <div class="p-6 pt-0">
+                <div class="flex flex-wrap gap-2">
+                    <p class="text-muted-foreground dark:text-white/70">No categories yet</p>
+                </div>
+            </div>
+        </div>
 
-    
-    </div
-
-    <!-- lg side bar layout -->
-
-
+        <div class="border-gray-500/40 border rounded-lg mx-10 ">
+            <div class="p-5">
+                <h1 class="dark:text-white font-semibold text-2xl">Manage Habits</h1>
+            </div>
+            <div class="text-center p-5 mb-10">
+                <p class="dark:text-white/70">No habits created yet. Add your first habit to get started!</p>
+            </div>
+        </div>
+    </section>
 </body>
-</html>
