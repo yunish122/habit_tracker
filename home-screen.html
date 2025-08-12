@@ -9,9 +9,9 @@
     <script src="script.js" type="module" defer></script>
 
 </head>
-<body class="w-[100vw] h-[100vh] dark:bg-black">
+<body class="w-[100vw] h-[100vh] dark:bg-black ">
     <!-- hidden div -->
-    <div id="hidden_div" class="hidden top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] bg-white p-5 rounded-lg">
+    <div id="hidden_div" class="hidden top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] border border-black/20 bg-white p-5 rounded-lg">
         <div class="flex flex-col gap-3">
             <div class="flex justify-between items-center">
                 <div class="mx-auto">
@@ -35,7 +35,7 @@
                     <label class="text-md font-semibold">Habit Name</label>
                 </div>
                 <div class="">
-                    <input id="input1" required class="py-3 px-2 border border-gray-500/40 w-full rounded-md
+                    <input id="input1" required class="py-3 px-2 border  border-gray-500/40 w-full rounded-md
                     focus:outline-0 focus:border-1 focus:border-
                     " placeholder="e.g, Drink 8 glasses of water" type="text">
                 </div>
@@ -78,7 +78,7 @@
             </div>
          </div>
     </div>
-
+    
     <!-- side bar -->
     <div class="fixed flex flex-col top-0 left-0 z-50 lg:w-[25%] lg:h-[100vh] lg:top-0 lg:left-0 transform -translate-x-full transition-transform border-r border-gray-300 dark:border-gray-400/40 lg:-translate-x-0 ">
         <!-- title for small screen -->
@@ -116,7 +116,8 @@
 
     <!-- main bar -->
     <div class="lg:flex lg:justify-end">
-        <div class="lg:w-[75%]" id="append_div">
+        <div class="lg:w-[75%]" >
+            
 
             <!-- title for small screen -->
             <div class="flex justify-between items-center p-5 w-full border-b-1 dark:border-gray-500/40 border-b-black/20 lg:hidden" > 
@@ -150,7 +151,7 @@
                 </div>    
             </div>
 
-            <div id="hide_if_add_habit_exist" class="m-5 flex flex-col gap-3" >
+            <div id="append_div" class="m-5 flex flex-col gap-3" >
                 <div class="flex flex-col items-center gap-3 border border-black/10 rounded-xl p-5 m-5 dark:border-gray-500/40">
                     <i data-lucide="notepad-text" class="text-white/50 w-8"></i>
                     <h1 class="font-semibold text-xl text-black/60 dark:text-white/50">No habits yet</h1>
@@ -162,8 +163,6 @@
 
     
     </div
-
-    <!-- lg side bar layout -->
 
 
 </body>

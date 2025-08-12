@@ -1,182 +1,293 @@
 
-var state = {
-
-    isDark : false
-
-}
 let intervalId;
+
+let state = JSON.parse(localStorage.getItem('states')) || {
+    isDark: false,
+    habit: [],
+    checked: false,
+    strak_number: 0
+}
+
 const hiddenDiv = document.getElementById('hidden_div');
 const overlayDiv = document.getElementById('overlay_div');
 
 const add_new_habit_title = document.getElementById("add_new_habit_title");
-const add_new_habit_sidebar = document.getElementById("add_new_habit_sidebar") 
-
+const add_new_habit_sidebar = document.getElementById("add_new_habit_sidebar");
 const submit_btn = document.getElementById('submit_btn');
 
-document.addEventListener('DOMContentLoaded',()=>{
+document.addEventListener('DOMContentLoaded', () => {
     lucide.createIcons();
-})
+    render();
+});
 
-document.getElementById('statistic').addEventListener('click',()=>{
-    window.location.href = 'statistic.html'
-})
-document.getElementById('today_habit').addEventListener('click',()=>{
-    window.location.href = 'home-screen.html'
-})
-document.getElementById('settings').addEventListener('click',()=>{
-    window.location.href = 'setting.html'
-})
+// navigation
+document.getElementById('statistic').addEventListener('click', () => {
+    window.location.href = 'statistic.html';
+});
+document.getElementById('today_habit').addEventListener('click', () => {
+    window.location.href = 'home-screen.html';
+});
+document.getElementById('settings').addEventListener('click', () => {
+    window.location.href = 'setting.html';
+});
 
-
-
-// this is for sidebar add button
-add_new_habit_sidebar?.addEventListener('click',()=>{
-    show_hidden_div()
+// open sidebar form
+add_new_habit_sidebar?.addEventListener('click', () => {
+    show_hidden_div();
     validation();
 })
-
-add_new_habit_title?.addEventListener('click',()=>{
+add_new_habit_title?.addEventListener('click', () => {
     show_hidden_div();
     validation();
 })
 
-document.getElementById('cross')?.addEventListener('click',()=>{
+document.getElementById('cross')?.addEventListener('click', () => {
     hide_hidden_div();
 })
 
-document.getElementById("dark_light").addEventListener('click',()=>{
-    state = JSON.parse(localStorage.getItem('states')) || {isDark : false}
+document.getElementById('append_div')?.addEventListener('click',(e)=>{
+    if(e.target.id === 'square_icon'){
+        state.checked = !state.checked;
+        update_state({checked: state.checked})
+        const closest = e.target.closest('.wrapper-div-class')
+        if(state.checked){
+            //checked
+            e.target.setAttribute('data-lucide','square-check');
+            if(closest){
+                closest.classList.add('bg-green-200/20','border-green-300/60')
+                closest.querySelector('.category_div').style.backgroundColor = 'black';
+                closest.querySelector('.category_div').classList.add('text-white');
+                closest.querySelector('.category_div').classList.remove('text-black')
+                closest.querySelector('.streak').classList.remove('hidden')
+            }
 
-    if(state.isDark){
-        state.isDark = false;
-        document.querySelector('html').classList.remove('dark');
-    }else{
-        document.querySelector('html').classList.add('dark');
-        state.isDark = true;
-    }
-    localStorage.setItem('states',  JSON.stringify(state))
-})
+        }else{
+            if(closest){
+                e.target.setAttribute('data-lucide','square');
+                closest.classList.remove('bg-green-200/20','border-green-300/60')
 
-submit_btn?.addEventListener('click',()=>{
-    document.getElementById('hide_if_add_habit_exist').style.display = 'none';
-    let titleText = document.getElementById('input1').value;
-    let descriptionText = document.getElementById('input2').value;
-    let category = document.getElementById('input3')
-    let category_value = category.value;
-    let categoryText = category.options[category.selectedIndex].text;
-    create_card(titleText,descriptionText,categoryText)
-    hide_hidden_div()
-})
+                closest.querySelector('.category_div').style.backgroundColor = 'white';
+                closest.querySelector('.category_div').classList.remove('text-white')
 
-function show_hidden_div(){
-    document.getElementById('hidden_div').classList.remove('hidden')
-    document.getElementById('hidden_div').classList.add('fixed')
-}
+                closest.querySelector('.category_div').classList.add('text-black')
+                closest.querySelector('.streak').classList.add('hidden')
 
-function hide_hidden_div(){
-    document.getElementById('hidden_div').classList.remove('fixed');
-    document.getElementById('hidden_div').classList.add('hidden')
-}
+            }
 
-function validation(){
-    clearInterval(intervalId);
-    intervalId = setInterval(check_input_validity,100);
-
-}
-
-function setTheme(){
-    state = JSON.parse(localStorage.getItem('states')) || {isDark : false}
-
-     if(state.isDark){
-        document.querySelector('html').classList.add('dark');
-    }else{
-        document.querySelector('html').classList.remove('dark');
-    }   
-}
-
-
-
-
-// checks validity of inputs of hidden div
-function check_input_validity(){
-    const input1 = document.getElementById('input1');
-    const input2 = document.querySelector('select');
-    if(input1.checkValidity() && input2.checkValidity()){
-        document.getElementById('submit_btn').style.backgroundColor = 'black'
-        document.getElementById('submit_btn').removeAttribute('disabled');
-
-    }else{
-
-        document.getElementById('submit_btn').style.backgroundColor = 'rgba(0,0,0,0.6)'
-        document.getElementById('submit_btn').setAttribute('disabled', "")
-
+        }
+        
+        update_state({checked: state.checked});
+        lucide.createIcons();
     }
 
+})
+
+
+
+
+
+submit_btn?.addEventListener('click', () => {
+    const titleText = document.getElementById('input1').value;
+    const descriptionText = document.getElementById('input2').value;
+    const category = document.getElementById('input3');
+    const categoryText = category.options[category.selectedIndex].text;
+
+    hide_hidden_div();
+    addHabit(titleText, descriptionText, categoryText);
+    
+    
+});
+
+function update_state(updated_state){
+    state = {...state, ...updated_state}
+    localStorage.setItem('states',JSON.stringify(state))
 }
 
+function renderTheme(){
+    document.querySelector('html').classList.toggle('dark',state.isDark)
+    
+}
 
-function create_card(titleText, descriptionText, categoryText){
+function toggleTheme(){
+    state.isDark = !state.isDark;
+    document.querySelector('html').classList.toggle('dark',state.isDark)
+    if(state){
+        update_state({isDark: state.isDark});
+    }
+}
 
-    //wrapper div
-    const wrapperDiv = document.createElement('div')
-    wrapperDiv.classList.add('flex', 'flex-col', 'gap-3' ,'border' ,'border-black/10' ,'rounded-xl', 'p-5' ,'m-5');
-    //first inner div
-    const wrapperDiv2 = document.createElement('div');
-    wrapperDiv2.classList.add('flex','justify-between' ,'items-center');
+function addHabit(title, description, category,streak_no) {
+    const habits = {
+        title_text: title,
+        description_text: description,
+        category_text: category,
+        streak: streak_no,
+        isChecked: false
+    };
 
-
-    //left icon and h1 tag
-    const left_div = document.createElement('div');
-    left_div.classList.add('flex','gap-3');
-    const left_i = document.createElement('i');
-    left_i.setAttribute('data-lucide','square');
-    const left_h1 = document.createElement('h1');
-    left_h1.classList.add('text-md' ,'font-semibold')
-    left_h1.textContent = titleText;
-
-    //right div
-    const right_div = document.createElement('div');
-    right_div.classList.add('flex','flex-col','gap-3');
-    //right inner div category ra icon
-    const right_inner_div = document.createElement('div')
-    right_inner_div.classList.add('flex', 'gap-3' ,'items-center');
-    //category ko lai div
-    const category_div = document.createElement('div');
-    category_div.classList.add('text-md' ,'font-semibold' ,'border' ,'border-black/10' ,'px-3' ,'py-0.5' ,'rounded-2xl');
-
-    const category_p = document.createElement('p');
-    category_p.textContent = categoryText;
-
-    const right_icon_div = document.createElement('div');
-    right_icon_div.classList.add('flex' ,'items-end' ,'p-3' ,'hover:bg-gray-50' ,'rounded-xl')
-    const right_icon = document.createElement('i');
-    right_icon.setAttribute('data-lucide','ellipsis');
+    update_state({habit: [...state.habit,habits]});
+    render();
+    
+}
+  
 
 
-    // lower div
-    const description_div = document.createElement('div');
-    description_div.classList.add('text-md' ,'text-gray-500/80' ,'font-semibold');
-    const description_p = document.createElement('p');
-    description_p.textContent = descriptionText;
+function render() {
+    
+    renderTheme();  
+    
+    if(state.habit && state.habit.length > 0){
+        append_div.innerHTML = "";
 
-    left_div.append(left_i,left_h1)
+        state.habit.forEach(habit => {
+            let card = create_card(habit.title_text, habit.description_text, habit.category_text);
+            render_check_uncheck(state.checked, card)
 
-    //category
-    category_div.append(category_p)
-    right_icon_div.append(right_icon)
+        });
+    }
+    
 
-    right_inner_div.append(category_div,right_icon_div);
-    right_div.append(right_inner_div);
-
-    wrapperDiv2.append(left_div,right_div)
-    //lower div
-    description_div.append(description_p);
-
-    wrapperDiv.append(wrapperDiv2,description_div);
-
-    const append_div = document.getElementById('append_div');
-    append_div.append(wrapperDiv);
     lucide.createIcons();
 }
 
-setTheme();
+//function to render checked unchecekd
+function render_check_uncheck(check_uncheck,card){
+
+    if(check_uncheck){
+        card.classList.remove('bg-green-200/20','border-green-300/60');
+        card.querySelector('.left_icon').setAttribute('data-lucide','square-check');
+        card.classList.add('bg-green-200/20','border-green-300/60')
+        card.querySelector('.category_div').style.backgroundColor = 'black';
+        card.querySelector('.category_div').classList.add('text-white');
+        card.querySelector('.category_div').classList.remove('text-black')
+        card.querySelector('.streak').classList.remove('hidden')
+    
+
+    }else{
+        card.querySelector('.left_icon').setAttribute('data-lucide','square');
+
+        card.classList.remove('bg-green-200/20','border-green-300/60')
+        card.querySelector('.left_icon').setAttribute('data-lucide','square');
+        card.querySelector('.category_div').style.backgroundColor = 'white';
+        card.querySelector('.category_div').classList.remove('text-white')
+        card.querySelector('.category_div').classList.add('text-black')
+        card.querySelector('.streak').classList.add('hidden')
+
+    
+
+    }
+}
+
+function show_hidden_div() {
+    hiddenDiv.classList.remove('hidden');
+    hiddenDiv.classList.add('fixed');
+}
+function hide_hidden_div() {
+    hiddenDiv.classList.remove('fixed');
+    hiddenDiv.classList.add('hidden');
+}
+
+function validation() {
+    clearInterval(intervalId);
+    intervalId = setInterval(check_input_validity, 100);
+}
+function check_input_validity() {
+    const input1 = document.getElementById('input1');
+    const input2 = document.querySelector('select');
+    if (input1.checkValidity() && input2.checkValidity()) {
+        submit_btn.style.backgroundColor = 'black';
+        submit_btn.removeAttribute('disabled');
+    } else {
+        submit_btn.style.backgroundColor = 'rgba(0,0,0,0.6)';
+        submit_btn.setAttribute('disabled', "");
+    }
+}
+
+// helper function to create element
+function create_element(dom, classes = []){
+    const element = document.createElement(dom);
+    element.classList.add(...classes);
+    return element;
+}
+// create icons
+function createIcon(attr = [],classes = []){
+    const icons = create_element('i',[...classes]);
+    icons.setAttribute(...attr)
+    return icons
+}
+// create card UI
+function create_card(titleText, descriptionText, categoryText, streak_number) {
+    const wrapperDiv = create_element('div',['wrapper-div-class','flex', 'flex-col', 'gap-1', 'border', 'border-black/10', 'rounded-xl', 'p-3', 'm-3']);
+    wrapperDiv.id = 'wrapper_div'
+    const wrapperDiv2 = create_element('div',['flex', 'justify-between', 'items-center']);
+
+    const left_div = create_element('div',['left_div','flex', 'gap-2','items-center','justify-center']);
+
+    const left_i = createIcon(['data-lucide', 'square'],['w-5','h-5','left_icon']);    
+
+    const left_h1 = create_element('h1',['text-md', 'font-semibold']);
+    left_h1.textContent = titleText;
+
+    //right div which will contain streak and other stuff
+    const right_div = create_element('div',['flex', 'flex-col', 'gap-2']);
+    const right_inner_div = create_element('div',['flex', 'gap-2', 'items-center','justify-center']);
+
+    // streak div
+    const streak_div = create_element('div',['rounded-2xl','px-3','py-0.5','flex','gap-1','bg-gray-100','items-center','justify-center','hidden','streak']);
+    const streak_icon = createIcon(['data-luicide','flame','stroke','red'],['w-4','h-4'])
+    const streak = document.createElement('h1',['text-md','font-semibold']);
+    streak.textContent = streak_number;
+
+    const category_div = create_element('div',['category_div','text-md', 'font-semibold', 'border', 'border-black/10', 'px-3', 'py-0.5', 'rounded-2xl']);
+    const category_p = create_element('p',['category_p','text-sm','font-semibold']);
+    category_p.textContent = categoryText;
+
+    // settings div/options
+    const right_icon_div = create_element('div',['right_icon_div','flex', 'items-end', 'p-3', 'hover:bg-gray-50', 'rounded-xl','relative']);
+    right_icon_div.id = 'right_icon_div'
+
+    const right_icon = createIcon(['data-lucide', 'ellipsis']);
+    const right_hidden_div = create_element('div',['right_hidden_div','hidden','bg-white','shadow-lg','shadow-gray-400/50','absolute','right-0','top-full','flex','flex-col','items-start','justify-center','gap-2','p-1','w-30','rounded-sm','border','border-gray-500/40']);
+
+    // right hidden edit div
+    const right_hidden_edit_div = create_element('div',['flex','justify-start','items-center','gap-2','hover:border','hover:border-2','hover:cursor-pointer','hover:border-black','w-full','h-full','px-2','rounded-sm']);
+    const right_hidden_edit_icon = createIcon(['data-lucide','square-pen'],['w-4','h-4']);
+    const right_hidden_div_edit_p = create_element('h1',['text-md','font-semibold']);
+    right_hidden_div_edit_p.textContent = 'Edit';
+    right_hidden_edit_div.append(right_hidden_edit_icon,right_hidden_div_edit_p);
+
+    // right hidden delete div
+    const right_hidden_delete_div = create_element('div',['flex','justify-start','items-center','gap-2','hover:border','hover:border-2','hover:border-black','w-full','h-full','px-2','rounded-sm','hover:cursor-pointer']);
+    const right_hidden_delete_icon = createIcon(['data-lucide','trash'],['w-4','h-4']);
+    const right_hidden_div_delete_p = create_element('h1',['text-md','font-semibold']);
+    right_hidden_div_delete_p.textContent = 'Delete';
+    right_hidden_delete_div.append(right_hidden_delete_icon,right_hidden_div_delete_p);
+
+    // hidden div append
+    right_hidden_div.append(right_hidden_edit_div,right_hidden_delete_div)
+
+    // descrition div
+    const description_div = create_element('div','text-md', 'text-gray-500/80', 'font-semibold');
+    const description_p = document.createElement('p');
+    description_p.textContent = descriptionText;
+    
+
+    // append
+    left_div.append(left_i, left_h1);
+    streak_div.append(streak_icon, streak);
+    category_div.append(category_p);
+    right_icon_div.append(right_icon);
+    right_icon_div.append(right_hidden_div);
+    right_inner_div.append(streak_div,category_div, right_icon_div); 
+    right_div.append(right_inner_div);
+    wrapperDiv2.append(left_div, right_div);
+     description_div.append(description_p);
+    wrapperDiv.append(wrapperDiv2, description_div);
+
+    document.getElementById('append_div').append(wrapperDiv)
+    console.log(wrapperDiv)
+    lucide.createIcons()
+
+    return wrapperDiv;
+}
+console.log(localStorage)
