@@ -4,20 +4,24 @@ let intervalId;
 let state = JSON.parse(localStorage.getItem('states')) || {
     isDark: false,
     habit: [],
-    checked: false,
-    strak_number: 0
+    total: 0
 }
 
+console.log(state)
 const hiddenDiv = document.getElementById('hidden_div');
 const overlayDiv = document.getElementById('overlay_div');
 
 const add_new_habit_title = document.getElementById("add_new_habit_title");
 const add_new_habit_sidebar = document.getElementById("add_new_habit_sidebar");
 const submit_btn = document.getElementById('submit_btn');
+const append_div = document.getElementById('append_div')
 
 document.addEventListener('DOMContentLoaded', () => {
-    lucide.createIcons();
-    render();
+    if(append_div){
+        lucide.createIcons();
+        render();    
+    }
+
 });
 
 // navigation
@@ -45,46 +49,68 @@ document.getElementById('cross')?.addEventListener('click', () => {
     hide_hidden_div();
 })
 
-document.getElementById('append_div')?.addEventListener('click',(e)=>{
-    if(e.target.id === 'square_icon'){
-        state.checked = !state.checked;
-        update_state({checked: state.checked})
-        const closest = e.target.closest('.wrapper-div-class')
-        if(state.checked){
-            //checked
-            e.target.setAttribute('data-lucide','square-check');
-            if(closest){
-                closest.classList.add('bg-green-200/20','border-green-300/60')
-                closest.querySelector('.category_div').style.backgroundColor = 'black';
-                closest.querySelector('.category_div').classList.add('text-white');
-                closest.querySelector('.category_div').classList.remove('text-black')
-                closest.querySelector('.streak').classList.remove('hidden')
-            }
+// document.getElementById('append_div')?.addEventListener('click',(e)=>{
 
-        }else{
-            if(closest){
-                e.target.setAttribute('data-lucide','square');
-                closest.classList.remove('bg-green-200/20','border-green-300/60')
+//     if(e.target.querySelector('.left_icon')){
+//         state.checked = !state.checked;
+//         // update_state({checked: state.checked})
+//         const closest = e.target.closest('.wrapper-div-class')
+//         if(state.checked){
+//             //checked
+//             e.target.setAttribute('data-lucide','square-check');
+//             if(closest){
+//                 closest.classList.add('bg-green-200/20','border-green-300/60')
+//                 closest.querySelector('.category_div').style.backgroundColor = 'black';
+//                 closest.querySelector('.category_div').classList.add('text-white');
+//                 closest.querySelector('.category_div').classList.remove('text-black')
+//                 closest.querySelector('.streak').classList.remove('hidden')
+//             }
 
-                closest.querySelector('.category_div').style.backgroundColor = 'white';
-                closest.querySelector('.category_div').classList.remove('text-white')
+//         }else{
+//             if(closest){
+//                 e.target.setAttribute('data-lucide','square');
+//                 closest.classList.remove('bg-green-200/20','border-green-300/60')
 
-                closest.querySelector('.category_div').classList.add('text-black')
-                closest.querySelector('.streak').classList.add('hidden')
+//                 closest.querySelector('.category_div').style.backgroundColor = 'white';
+//                 closest.querySelector('.category_div').classList.remove('text-white')
 
-            }
+//                 closest.querySelector('.category_div').classList.add('text-black')
+//                 closest.querySelector('.streak').classList.add('hidden')
 
-        }
+//             }
+
+//         }
         
-        update_state({checked: state.checked});
-        lucide.createIcons();
+//         update_state({checked: state.checked});
+//         lucide.createIcons();
+//     }
+
+// })
+
+// function to trigger checkbox
+
+
+
+// toggles theme
+document.getElementById('dark_light').addEventListener('click',toggleTheme)
+
+// toggles checkbox
+document.getElementById('append_div').addEventListener('click',(e)=>{
+    if(e.target.closest('.left_icon')){
+        console.log(e)
+        update_checkBox(e)
     }
 
 })
+// updates check box when check box is clied
+function update_checkBox(e){
 
+    const closest = e.target.closest('.wrapper-div-class')
+    state.habit.isChecked = !state.habit.isChecked;
 
-
-
+    render_check_uncheck(state.habit.isChecked, closest)
+    
+}
 
 submit_btn?.addEventListener('click', () => {
     const titleText = document.getElementById('input1').value;
@@ -93,9 +119,9 @@ submit_btn?.addEventListener('click', () => {
     const categoryText = category.options[category.selectedIndex].text;
 
     hide_hidden_div();
+    
     addHabit(titleText, descriptionText, categoryText);
-    
-    
+    state.total++;
 });
 
 function update_state(updated_state){
@@ -108,7 +134,7 @@ function renderTheme(){
     
 }
 
-function toggleTheme(){
+export function toggleTheme(){
     state.isDark = !state.isDark;
     document.querySelector('html').classList.toggle('dark',state.isDark)
     if(state){
@@ -116,31 +142,30 @@ function toggleTheme(){
     }
 }
 
-function addHabit(title, description, category,streak_no) {
+function addHabit(title, description, category) {
     const habits = {
         title_text: title,
         description_text: description,
         category_text: category,
-        streak: streak_no,
-        isChecked: false
+        isChecked: false,
     };
-
-    update_state({habit: [...state.habit,habits]});
+    let newTotal = state.total++;
+    update_state({total: newTotal});
+    update_state({habit: [...state.habit, habits]});
     render();
     
 }
   
-
 
 function render() {
     
     renderTheme();  
     
     if(state.habit && state.habit.length > 0){
-        append_div.innerHTML = "";
-
+        append_div.innerHTML = '';
         state.habit.forEach(habit => {
-            let card = create_card(habit.title_text, habit.description_text, habit.category_text);
+
+            let card = create_card(habit.title_text, habit.description_text, habit.category_text, state.total);
             render_check_uncheck(state.checked, card)
 
         });
@@ -150,12 +175,15 @@ function render() {
     lucide.createIcons();
 }
 
+
 //function to render checked unchecekd
 function render_check_uncheck(check_uncheck,card){
 
     if(check_uncheck){
         card.classList.remove('bg-green-200/20','border-green-300/60');
         card.querySelector('.left_icon').setAttribute('data-lucide','square-check');
+
+
         card.classList.add('bg-green-200/20','border-green-300/60')
         card.querySelector('.category_div').style.backgroundColor = 'black';
         card.querySelector('.category_div').classList.add('text-white');
@@ -176,6 +204,7 @@ function render_check_uncheck(check_uncheck,card){
     
 
     }
+    lucide.createIcons()
 }
 
 function show_hidden_div() {
@@ -216,8 +245,9 @@ function createIcon(attr = [],classes = []){
     return icons
 }
 // create card UI
-function create_card(titleText, descriptionText, categoryText, streak_number) {
+function create_card(titleText, descriptionText, categoryText, idx) {
     const wrapperDiv = create_element('div',['wrapper-div-class','flex', 'flex-col', 'gap-1', 'border', 'border-black/10', 'rounded-xl', 'p-3', 'm-3']);
+    wrapperDiv.setAttribute('data-index',idx)
     wrapperDiv.id = 'wrapper_div'
     const wrapperDiv2 = create_element('div',['flex', 'justify-between', 'items-center']);
 
@@ -234,9 +264,10 @@ function create_card(titleText, descriptionText, categoryText, streak_number) {
 
     // streak div
     const streak_div = create_element('div',['rounded-2xl','px-3','py-0.5','flex','gap-1','bg-gray-100','items-center','justify-center','hidden','streak']);
-    const streak_icon = createIcon(['data-luicide','flame','stroke','red'],['w-4','h-4'])
+    const streak_icon = createIcon(['data-lucide','flame'],['w-4','h-4'])
+    streak_icon.setAttribute('stroke','red')
     const streak = document.createElement('h1',['text-md','font-semibold']);
-    streak.textContent = streak_number;
+    streak.textContent = 1;
 
     const category_div = create_element('div',['category_div','text-md', 'font-semibold', 'border', 'border-black/10', 'px-3', 'py-0.5', 'rounded-2xl']);
     const category_p = create_element('p',['category_p','text-sm','font-semibold']);
@@ -285,9 +316,7 @@ function create_card(titleText, descriptionText, categoryText, streak_number) {
     wrapperDiv.append(wrapperDiv2, description_div);
 
     document.getElementById('append_div').append(wrapperDiv)
-    console.log(wrapperDiv)
     lucide.createIcons()
 
     return wrapperDiv;
 }
-console.log(localStorage)
