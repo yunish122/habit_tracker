@@ -49,46 +49,6 @@ document.getElementById('cross')?.addEventListener('click', () => {
     hide_hidden_div();
 })
 
-// document.getElementById('append_div')?.addEventListener('click',(e)=>{
-
-//     if(e.target.querySelector('.left_icon')){
-//         state.checked = !state.checked;
-//         // update_state({checked: state.checked})
-//         const closest = e.target.closest('.wrapper-div-class')
-//         if(state.checked){
-//             //checked
-//             e.target.setAttribute('data-lucide','square-check');
-//             if(closest){
-//                 closest.classList.add('bg-green-200/20','border-green-300/60')
-//                 closest.querySelector('.category_div').style.backgroundColor = 'black';
-//                 closest.querySelector('.category_div').classList.add('text-white');
-//                 closest.querySelector('.category_div').classList.remove('text-black')
-//                 closest.querySelector('.streak').classList.remove('hidden')
-//             }
-
-//         }else{
-//             if(closest){
-//                 e.target.setAttribute('data-lucide','square');
-//                 closest.classList.remove('bg-green-200/20','border-green-300/60')
-
-//                 closest.querySelector('.category_div').style.backgroundColor = 'white';
-//                 closest.querySelector('.category_div').classList.remove('text-white')
-
-//                 closest.querySelector('.category_div').classList.add('text-black')
-//                 closest.querySelector('.streak').classList.add('hidden')
-
-//             }
-
-//         }
-        
-//         update_state({checked: state.checked});
-//         lucide.createIcons();
-//     }
-
-// })
-
-// function to trigger checkbox
-
 
 
 // toggles theme
@@ -96,20 +56,27 @@ document.getElementById('dark_light').addEventListener('click',toggleTheme)
 
 // toggles checkbox
 document.getElementById('append_div').addEventListener('click',(e)=>{
+    console.log(state)
+
     if(e.target.closest('.left_icon')){
         console.log(e)
         update_checkBox(e)
     }
 
+
 })
 // updates check box when check box is clied
 function update_checkBox(e){
-
     const closest = e.target.closest('.wrapper-div-class')
-    state.habit.isChecked = !state.habit.isChecked;
 
-    render_check_uncheck(state.habit.isChecked, closest)
-    
+    let idx = parseInt(closest.getAttribute('data-index'));
+    state.habit[idx].isChecked = !state.habit[idx].isChecked;
+
+    const square_box = state.habit[idx].isChecked;
+    render_check_uncheck(square_box, closest)
+
+
+    update_state({habit: state.habit.map((iterable, i)=> i === idx ? {...iterable, isChecked: square_box} : iterable)})
 }
 
 submit_btn?.addEventListener('click', () => {
@@ -119,9 +86,8 @@ submit_btn?.addEventListener('click', () => {
     const categoryText = category.options[category.selectedIndex].text;
 
     hide_hidden_div();
-    
+
     addHabit(titleText, descriptionText, categoryText);
-    state.total++;
 });
 
 function update_state(updated_state){
@@ -143,30 +109,30 @@ export function toggleTheme(){
 }
 
 function addHabit(title, description, category) {
+
     const habits = {
         title_text: title,
         description_text: description,
         category_text: category,
         isChecked: false,
     };
-    let newTotal = state.total++;
-    update_state({total: newTotal});
+    state.total++;
+    update_state({total: state.total});
     update_state({habit: [...state.habit, habits]});
     render();
     
 }
   
-
 function render() {
-    
+
     renderTheme();  
     
     if(state.habit && state.habit.length > 0){
         append_div.innerHTML = '';
-        state.habit.forEach(habit => {
+        state.habit.forEach((habit,i) => {
 
-            let card = create_card(habit.title_text, habit.description_text, habit.category_text, state.total);
-            render_check_uncheck(state.checked, card)
+            let card = create_card(habit.title_text, habit.description_text, habit.category_text, i);
+            render_check_uncheck(habit.isChecked, card)
 
         });
     }
@@ -178,6 +144,7 @@ function render() {
 
 //function to render checked unchecekd
 function render_check_uncheck(check_uncheck,card){
+
 
     if(check_uncheck){
         card.classList.remove('bg-green-200/20','border-green-300/60');
@@ -191,7 +158,8 @@ function render_check_uncheck(check_uncheck,card){
         card.querySelector('.streak').classList.remove('hidden')
     
 
-    }else{
+    }else {
+        console.log('false')
         card.querySelector('.left_icon').setAttribute('data-lucide','square');
 
         card.classList.remove('bg-green-200/20','border-green-300/60')
