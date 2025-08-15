@@ -7,7 +7,6 @@ let state = JSON.parse(localStorage.getItem('states')) || {
     total: 0
 }
 
-console.log(state)
 const hiddenDiv = document.getElementById('hidden_div');
 const overlayDiv = document.getElementById('overlay_div');
 
@@ -56,15 +55,45 @@ document.getElementById('dark_light').addEventListener('click',toggleTheme)
 
 // toggles checkbox
 document.getElementById('append_div').addEventListener('click',(e)=>{
-    console.log(state)
-
-    if(e.target.closest('.left_icon')){
-        console.log(e)
+    const left_icon_closest = e.target.closest('.left_icon')
+    const right_icon_closest = e.target.closest('.right_icon_div')
+    const right_icon_edit = right_icon_closest.querySelector('.right_icon_edit')
+    const right_icon_delete = right_icon_closest.querySelector('.right_icon_delete')
+    if(left_icon_closest){
         update_checkBox(e)
     }
 
+    if(right_icon_closest){
+        right_icon_closest.querySelector('.right_hidden_div').classList.toggle('hidden')
+    }
 
+    right_icon_delete.addEventListener('click',(e)=>{
+        delete_element(e)
+    })
+
+    // right_icon_edit.addEventListener('click',(e)=>{
+    //     edit_element(e)
+    // })
 })
+
+
+// //function to edit element
+// function edit_element(e){
+//     const card = e.target.closest('.wrapper-div-class');
+//     show_hidden_div()
+
+// }
+
+
+// function to delete element
+function delete_element(e){
+    const card = e.target.closest('.wrapper-div-class')
+    const idx = card.getAttribute('data-index');
+    state.habit.splice(idx,1);
+    update_state({habit: state.habit});
+    card.remove()
+}
+
 // updates check box when check box is clied
 function update_checkBox(e){
     const closest = e.target.closest('.wrapper-div-class')
@@ -159,7 +188,6 @@ function render_check_uncheck(check_uncheck,card){
     
 
     }else {
-        console.log('false')
         card.querySelector('.left_icon').setAttribute('data-lucide','square');
 
         card.classList.remove('bg-green-200/20','border-green-300/60')
@@ -242,21 +270,20 @@ function create_card(titleText, descriptionText, categoryText, idx) {
     category_p.textContent = categoryText;
 
     // settings div/options
-    const right_icon_div = create_element('div',['right_icon_div','flex', 'items-end', 'p-3', 'hover:bg-gray-50', 'rounded-xl','relative']);
-    right_icon_div.id = 'right_icon_div'
+    const right_icon_div = create_element('div',['right_icon_div','flex', 'items-end', 'p-3', 'rounded-xl','relative']);
 
-    const right_icon = createIcon(['data-lucide', 'ellipsis']);
+    const right_icon = createIcon(['data-lucide', 'ellipsis'],['hover:bg-gray-50']);
     const right_hidden_div = create_element('div',['right_hidden_div','hidden','bg-white','shadow-lg','shadow-gray-400/50','absolute','right-0','top-full','flex','flex-col','items-start','justify-center','gap-2','p-1','w-30','rounded-sm','border','border-gray-500/40']);
 
     // right hidden edit div
-    const right_hidden_edit_div = create_element('div',['flex','justify-start','items-center','gap-2','hover:border','hover:border-2','hover:cursor-pointer','hover:border-black','w-full','h-full','px-2','rounded-sm']);
+    const right_hidden_edit_div = create_element('div',['right_icon_edit','flex','justify-start','items-center','gap-2','hover:border','hover:border-2','hover:cursor-pointer','hover:border-black','w-full','h-full','px-2','rounded-sm']);
     const right_hidden_edit_icon = createIcon(['data-lucide','square-pen'],['w-4','h-4']);
     const right_hidden_div_edit_p = create_element('h1',['text-md','font-semibold']);
     right_hidden_div_edit_p.textContent = 'Edit';
     right_hidden_edit_div.append(right_hidden_edit_icon,right_hidden_div_edit_p);
 
     // right hidden delete div
-    const right_hidden_delete_div = create_element('div',['flex','justify-start','items-center','gap-2','hover:border','hover:border-2','hover:border-black','w-full','h-full','px-2','rounded-sm','hover:cursor-pointer']);
+    const right_hidden_delete_div = create_element('div',['right_icon_delete','flex','justify-start','items-center','gap-2','hover:border','hover:border-2','hover:border-black','w-full','h-full','px-2','rounded-sm','hover:cursor-pointer']);
     const right_hidden_delete_icon = createIcon(['data-lucide','trash'],['w-4','h-4']);
     const right_hidden_div_delete_p = create_element('h1',['text-md','font-semibold']);
     right_hidden_div_delete_p.textContent = 'Delete';
@@ -285,6 +312,5 @@ function create_card(titleText, descriptionText, categoryText, idx) {
 
     document.getElementById('append_div').append(wrapperDiv)
     lucide.createIcons()
-
     return wrapperDiv;
 }
