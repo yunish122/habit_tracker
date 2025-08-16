@@ -56,9 +56,13 @@ document.getElementById('dark_light').addEventListener('click',toggleTheme)
 // toggles checkbox
 document.getElementById('append_div').addEventListener('click',(e)=>{
     const left_icon_closest = e.target.closest('.left_icon')
+    
     const right_icon_closest = e.target.closest('.right_icon_div')
-    const right_icon_edit = right_icon_closest.querySelector('.right_icon_edit')
+
     const right_icon_delete = right_icon_closest.querySelector('.right_icon_delete')
+    
+
+    console.log(right_icon_closest)
     if(left_icon_closest){
         update_checkBox(e)
     }
@@ -67,25 +71,15 @@ document.getElementById('append_div').addEventListener('click',(e)=>{
         right_icon_closest.querySelector('.right_hidden_div').classList.toggle('hidden')
     }
 
+    
     right_icon_delete.addEventListener('click',(e)=>{
         delete_element(e)
     })
-
-    // right_icon_edit.addEventListener('click',(e)=>{
-    //     edit_element(e)
-    // })
 })
 
 
-// //function to edit element
-// function edit_element(e){
-//     const card = e.target.closest('.wrapper-div-class');
-//     show_hidden_div()
-
-// }
-
-
 // function to delete element
+
 function delete_element(e){
     const card = e.target.closest('.wrapper-div-class')
     const idx = card.getAttribute('data-index');
