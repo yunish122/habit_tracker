@@ -15,6 +15,8 @@ const add_new_habit_sidebar = document.getElementById("add_new_habit_sidebar");
 const submit_btn = document.getElementById('submit_btn');
 const append_div = document.getElementById('append_div')
 
+const hidden_edit_div = document.getElementById('hidden_edit_div')
+
 document.addEventListener('DOMContentLoaded', () => {
     if(append_div){
         lucide.createIcons();
@@ -49,41 +51,81 @@ document.getElementById('cross')?.addEventListener('click', () => {
 })
 
 
+document.getElementById('edit_cross')?.addEventListener('click', () => {
+    hide_hidden_edit_div();
+})
 
 // toggles theme
 document.getElementById('dark_light').addEventListener('click',toggleTheme)
 
 // toggles checkbox
-document.getElementById('append_div').addEventListener('click',(e)=>{
-    const left_icon_closest = e.target.closest('.left_icon')
-    
-    const right_icon_closest = e.target.closest('.right_icon_div')
+document.getElementById('append_div').addEventListener('click',(e)=>{    
 
-    const right_icon_delete = right_icon_closest.querySelector('.right_icon_delete')
-    
-
-    console.log(right_icon_closest)
-    if(left_icon_closest){
+    if(e.target.closest('.left_icon')){
+        console.log(e)
         update_checkBox(e)
     }
 
-    if(right_icon_closest){
-        right_icon_closest.querySelector('.right_hidden_div').classList.toggle('hidden')
-    }
+    const right_icon_closest = e.target.closest('.right_icon_div')
+    const right_icon_delete = right_icon_closest.querySelector('.right_icon_delete')
 
+    right_icon_closest.querySelector('.right_hidden_div').classList.toggle('hidden')
     
     right_icon_delete.addEventListener('click',(e)=>{
         delete_element(e)
     })
+
+    const right_icon_edit = right_icon_closest.querySelector('.right_icon_edit');
+
+    right_icon_edit.addEventListener('click',(e)=>{
+        edit_element(e);
+    })
 })
 
+//function to edit element
+function edit_element(e){
+    show_hidden_edit_div();
+
+    const edit_btn = document.getElementById('edit_btn');
+    const wrapper_div = e.target.closest('.wrapper-div-class')
+
+    edit_btn.addEventListener('click',()=>{
+
+        const titleText = document.getElementById('edit_input1').value;
+        const descriptionText = document.getElementById('edit_input2').value;
+        const category = document.getElementById('edit_input3');
+        const categoryText = category.options[category.selectedIndex].text;
+        
+        console.log(wrapper_div)
+        hide_hidden_edit_div()
+
+        const title_text = wrapper_div.querySelector('.left_h1')
+        
+        if(titleText) title_text.textContent = titleText;
+
+        const categoryP = wrapper_div.querySelector('.category_p')
+        if(categoryText) categoryP.textContent = categoryText;
+        
+        const descP = wrapper_div.querySelector('.description_p')
+        if(descriptionText) descP.textContent = descriptionText || '';
+            
+        const idx = parseInt(wrapper_div.getAttribute('data-index'))
+        update_state({habit: state.habit.map((iterable,i)=> idx === i ?  {...iterable
+            ,title_text: titleText,
+             description_text: descriptionText,
+             category_text: categoryText} : iterable )})
+            
+    })
+}
 
 // function to delete element
-
 function delete_element(e){
     const card = e.target.closest('.wrapper-div-class')
     const idx = card.getAttribute('data-index');
     state.habit.splice(idx,1);
+    
+    state.total--;
+    update_state({total: state.total})
     update_state({habit: state.habit});
     card.remove()
 }
@@ -100,6 +142,7 @@ function update_checkBox(e){
 
 
     update_state({habit: state.habit.map((iterable, i)=> i === idx ? {...iterable, isChecked: square_box} : iterable)})
+    isComplete()
 }
 
 submit_btn?.addEventListener('click', () => {
@@ -140,16 +183,33 @@ function addHabit(title, description, category) {
         isChecked: false,
     };
     state.total++;
+
     update_state({total: state.total});
     update_state({habit: [...state.habit, habits]});
     render();
     
 }
   
-function render() {
+function count_completeion(){
+    let compeleted = 0;
+    state.habit.forEach(element => {
+        if(element.isChecked){
+            compeleted++
+        }
+    });
+    return compeleted;
+}
 
+// function that updates the completion div
+function isComplete(){
+    let completed = count_completeion();
+    document.getElementById('completed').textContent = `${completed}/${state.total}`
+}
+
+function render() {
+    console.log(state.total)
     renderTheme();  
-    
+    isComplete()
     if(state.habit && state.habit.length > 0){
         append_div.innerHTML = '';
         state.habit.forEach((habit,i) => {
@@ -191,12 +251,19 @@ function render_check_uncheck(check_uncheck,card){
         card.querySelector('.category_div').classList.add('text-black')
         card.querySelector('.streak').classList.add('hidden')
 
-    
-
     }
     lucide.createIcons()
 }
 
+function show_hidden_edit_div(){
+    hidden_edit_div.classList.remove('hidden');
+    hidden_edit_div.classList.add('fixed');
+}
+
+function hide_hidden_edit_div(){
+    hidden_edit_div.classList.add('hidden');
+    hidden_edit_div.classList.remove('fixed');
+}
 function show_hidden_div() {
     hiddenDiv.classList.remove('hidden');
     hiddenDiv.classList.add('fixed');
@@ -245,7 +312,7 @@ function create_card(titleText, descriptionText, categoryText, idx) {
 
     const left_i = createIcon(['data-lucide', 'square'],['w-5','h-5','left_icon']);    
 
-    const left_h1 = create_element('h1',['text-md', 'font-semibold']);
+    const left_h1 = create_element('h1',['text-md', 'font-semibold','left_h1']);
     left_h1.textContent = titleText;
 
     //right div which will contain streak and other stuff
@@ -288,7 +355,7 @@ function create_card(titleText, descriptionText, categoryText, idx) {
 
     // descrition div
     const description_div = create_element('div','text-md', 'text-gray-500/80', 'font-semibold');
-    const description_p = document.createElement('p');
+    const description_p = create_element('p',['description_p']);
     description_p.textContent = descriptionText;
     
 
