@@ -230,25 +230,16 @@ function render_check_uncheck(check_uncheck,card){
 
 
     if(check_uncheck){
-        card.classList.remove('bg-green-200/20','border-green-300/60');
         card.querySelector('.left_icon').setAttribute('data-lucide','square-check');
-
-
-        card.classList.add('bg-green-200/20','border-green-300/60')
-        card.querySelector('.category_div').style.backgroundColor = 'black';
-        card.querySelector('.category_div').classList.add('text-white');
-        card.querySelector('.category_div').classList.remove('text-black')
+        card.classList.add('bg-green-200/20','border-green-300/60','dark:border-green-400/50','dark:bg-black')
         card.querySelector('.streak').classList.remove('hidden')
-    
+
 
     }else {
         card.querySelector('.left_icon').setAttribute('data-lucide','square');
 
-        card.classList.remove('bg-green-200/20','border-green-300/60')
+        card.classList.remove('bg-green-200/20','border-green-300/60','dark:border-green-400/50','dark:bg-black')
         card.querySelector('.left_icon').setAttribute('data-lucide','square');
-        card.querySelector('.category_div').style.backgroundColor = 'white';
-        card.querySelector('.category_div').classList.remove('text-white')
-        card.querySelector('.category_div').classList.add('text-black')
         card.querySelector('.streak').classList.add('hidden')
 
     }
@@ -303,16 +294,16 @@ function createIcon(attr = [],classes = []){
 }
 // create card UI
 function create_card(titleText, descriptionText, categoryText, idx) {
-    const wrapperDiv = create_element('div',['wrapper-div-class','flex', 'flex-col', 'gap-1', 'border', 'border-black/10', 'rounded-xl', 'p-3', 'm-3']);
+    const wrapperDiv = create_element('div',['wrapper-div-class','flex', 'flex-col', 'gap-1', 'border', 'border-black/10','dark:border-gray-400/50', 'rounded-xl', 'p-3', 'm-3']);
     wrapperDiv.setAttribute('data-index',idx)
     wrapperDiv.id = 'wrapper_div'
     const wrapperDiv2 = create_element('div',['flex', 'justify-between', 'items-center']);
 
     const left_div = create_element('div',['left_div','flex', 'gap-2','items-center','justify-center']);
 
-    const left_i = createIcon(['data-lucide', 'square'],['w-5','h-5','left_icon']);    
+    const left_i = createIcon(['data-lucide', 'square'],['w-5','h-5','left_icon','dark:text-white']);    
 
-    const left_h1 = create_element('h1',['text-md', 'font-semibold','left_h1']);
+    const left_h1 = create_element('h1',['text-md', 'font-semibold','left_h1','dark:text-white']);
     left_h1.textContent = titleText;
 
     //right div which will contain streak and other stuff
@@ -320,20 +311,20 @@ function create_card(titleText, descriptionText, categoryText, idx) {
     const right_inner_div = create_element('div',['flex', 'gap-2', 'items-center','justify-center']);
 
     // streak div
-    const streak_div = create_element('div',['rounded-2xl','px-3','py-0.5','flex','gap-1','bg-gray-100','items-center','justify-center','hidden','streak']);
+    const streak_div = create_element('div',['rounded-2xl','px-3','py-0.5','flex','gap-1','bg-gray-100','items-center','justify-center','hidden','streak','dark:bg-gray-800']);
     const streak_icon = createIcon(['data-lucide','flame'],['w-4','h-4'])
     streak_icon.setAttribute('stroke','red')
-    const streak = document.createElement('h1',['text-md','font-semibold']);
+    const streak = create_element('h1',['text-sm','font-semibold','dark:text-white/80']);
     streak.textContent = 1;
 
-    const category_div = create_element('div',['category_div','text-md', 'font-semibold', 'border', 'border-black/10', 'px-3', 'py-0.5', 'rounded-2xl']);
-    const category_p = create_element('p',['category_p','text-sm','font-semibold']);
+    const category_div = create_element('div',['category_div','text-md', 'font-semibold', 'border', 'border-black/10', 'px-3', 'py-0.5', 'rounded-2xl','dark:bg-black','dark:border-gray-400/30']);
+    const category_p = create_element('p',['category_p','text-sm','font-semibold','dark:text-white/90']);
     category_p.textContent = categoryText;
 
     // settings div/options
     const right_icon_div = create_element('div',['right_icon_div','flex', 'items-end', 'p-3', 'rounded-xl','relative']);
 
-    const right_icon = createIcon(['data-lucide', 'ellipsis'],['hover:bg-gray-50']);
+    const right_icon = createIcon(['data-lucide', 'ellipsis'],['hover:bg-gray-50','dark:text-white']);
     const right_hidden_div = create_element('div',['right_hidden_div','hidden','bg-white','shadow-lg','shadow-gray-400/50','absolute','right-0','top-full','flex','flex-col','items-start','justify-center','gap-2','p-1','w-30','rounded-sm','border','border-gray-500/40']);
 
     // right hidden edit div

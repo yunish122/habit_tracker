@@ -1,4 +1,3 @@
-import { toggleTheme } from "./script.js";
 
 //dom cache
 const total_habit = document.getElementById('total_habit')
@@ -8,7 +7,7 @@ const state = JSON.parse(localStorage.getItem('states')) || {};
 console.log(state)
 
 const theme = document.getElementById('dark_light')
-theme.addEventListener('click',toggleTheme)
+if(theme) theme.addEventListener('click',toggleTheme)
 
 
 //sets total number of habits from state.habit
