@@ -124,7 +124,7 @@ function delete_element(e){
     const idx = card.getAttribute('data-index');
     state.habit.splice(idx,1);
     
-
+    state.total--;
     update_state({total: state.total})
     update_state({habit: state.habit});
     card.remove()
@@ -142,6 +142,7 @@ function update_checkBox(e){
 
 
     update_state({habit: state.habit.map((iterable, i)=> i === idx ? {...iterable, isChecked: square_box} : iterable)})
+    isComplete()
 }
 
 submit_btn?.addEventListener('click', () => {
@@ -199,10 +200,16 @@ function count_completeion(){
     return compeleted;
 }
 
+// function that updates the completion div
+function isComplete(){
+    let completed = count_completeion();
+    document.getElementById('completed').textContent = `${completed}/${state.total}`
+}
+
 function render() {
     console.log(state.total)
     renderTheme();  
-
+    isComplete()
     if(state.habit && state.habit.length > 0){
         append_div.innerHTML = '';
         state.habit.forEach((habit,i) => {
