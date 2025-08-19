@@ -1,5 +1,6 @@
 import { getState, update_state } from "../state.js";
 import { toggleTheme } from "../helper/utils.js";
+import { create_element, createIcon } from "./script.js";
 //dom cache
 const total_habit = document.getElementById('total_habit')
 // states
@@ -35,3 +36,58 @@ document.getElementById("completed_percentage").textContent = `${total_percentag
 document.getElementById("total_completed").textContent = `${total_completed}`
 
 
+function create_card(title_text, category_text,idx){
+
+    //wrapper div which will contain all other child class
+    const wrapper_div = create_element('div',['flex','flex-col','gap-3'])
+    wrapper_div.setAttribute('data-index',idx)
+    //first inner div that will contain title text and category
+    const first_inner_div = create_element('div',['flex', 'flex-row', 'items-center', 'justify-between'])
+
+    const first_inner_child_div = create_element('div',['flex' ,'items-center' ,'gap-4'])
+
+    const titleText = create_element('h1',["text-xl" ,"font-semibold"])
+    titleText.textContent = title_text;
+
+    const category_div = create_element('div',['border', 'border-gray-400/50', "rounded-2xl", 'px-3'])
+    const categoryText = create_element('h1',['text-sm', 'font-semibold'])
+    categoryText.textContent = category_text;
+
+    //group which contains title text 
+    category_div.wrapper_div(categoryText);
+    first_inner_child_div.wrapper_div(titleText,category_div);
+    first_inner_div.append(first_inner_child_div);
+
+    // progress bar
+    const progress_bar = create_element('div',['h-2', 'rounded-2xl' ,'bg-black' ,'w-full'])
+
+    // groupp 3
+    const third_bar = create_element('div', ['flex', 'items-center', 'justify-between'])
+
+    const track_text = create_element('h1', ['text-sm', 'text-gray-900/70'])
+
+    const completed_text = create_element('h1', ['text-sm', 'text-gray-900/70'])
+    //group 3
+    progress_bar.append(track_text,completed_text);
+
+    wrapper_div.append(first_inner_div,progress_bar,third_bar)
+    
+    document.getElementById('append_div').append(wrapper_div);
+
+    return wrapper_div;
+
+
+}
+
+function render(){
+    if(state.habit > 0){
+        console.log('hidden')
+        document.getElementById("div_if_no_habit").classList.add('hidden')
+        state.habit.map((habit,i)=>{
+            let card = create_card(habit.title_text, habit.category_text,i);
+        })
+    }
+
+
+}
+render()

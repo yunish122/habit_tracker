@@ -258,13 +258,13 @@ function check_input_validity() {
 }
 
 // helper function to create element
-function create_element(dom, classes = []){
+export function create_element(dom, classes = []){
     const element = document.createElement(dom);
     element.classList.add(...classes);
     return element;
 }
 // create icons
-function createIcon(attr = [],classes = []){
+export function createIcon(attr = [],classes = []){
     const icons = create_element('i',[...classes]);
     icons.setAttribute(...attr)
     return icons
