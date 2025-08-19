@@ -1,11 +1,12 @@
-
+import { toggleTheme, renderTheme, count_completeion} from "../helper/utils.js";
+import { getState, update_state } from "../state.js";
 let intervalId;
 
-let state = JSON.parse(localStorage.getItem('states')) || {
+let state = getState() || {
     isDark: false,
     habit: [],
     total: 0
-}
+};
 
 const hiddenDiv = document.getElementById('hidden_div');
 const overlayDiv = document.getElementById('overlay_div');
@@ -156,23 +157,7 @@ submit_btn?.addEventListener('click', () => {
     addHabit(titleText, descriptionText, categoryText);
 });
 
-function update_state(updated_state){
-    state = {...state, ...updated_state}
-    localStorage.setItem('states',JSON.stringify(state))
-}
 
-function renderTheme(){
-    document.querySelector('html').classList.toggle('dark',state.isDark)
-    
-}
-
-export function toggleTheme(){
-    state.isDark = !state.isDark;
-    document.querySelector('html').classList.toggle('dark',state.isDark)
-    if(state){
-        update_state({isDark: state.isDark});
-    }
-}
 
 function addHabit(title, description, category) {
 
@@ -190,15 +175,7 @@ function addHabit(title, description, category) {
     
 }
   
-function count_completeion(){
-    let compeleted = 0;
-    state.habit.forEach(element => {
-        if(element.isChecked){
-            compeleted++
-        }
-    });
-    return compeleted;
-}
+
 
 // function that updates the completion div
 function isComplete(){
@@ -264,7 +241,7 @@ function hide_hidden_div() {
     hiddenDiv.classList.add('hidden');
 }
 
-function validation() {
+export function validation() {
     clearInterval(intervalId);
     intervalId = setInterval(check_input_validity, 100);
 }

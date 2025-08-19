@@ -6,7 +6,7 @@
     <title>Document</title>
     <link href="./src/output.css" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
-    <script type="module" src="statistic.js"  defer></script>
+    <script type="module" src="js/pages/statistic.js"  defer></script>
     <style>
         #overlay{
             position: fixed;
@@ -176,10 +176,10 @@
             <!-- notepad -->
             <div class="border border-gray-500/40 rounded-xl p-5">
                 <div class="flex justify-between">
-                    <h1 class="text-md font-medium dark:text-white">Total Completion</h1>
+                    <h1  class="text-md font-medium dark:text-white">Total Completion</h1>
                     <i data-lucide="notepad-text" class="dark:text-white/70"></i>
                 </div>
-                <h1 class="text-2xl font-bold dark:text-white">0</h1>
+                <h1 id="total_completed" class="text-2xl font-bold dark:text-white">0</h1>
             </div>
 
 
