@@ -79,6 +79,8 @@ document.getElementById('append_div').addEventListener('click',(e)=>{
 
 // listener to listne tab change, dom refresh
 
+
+// console.log(`highest = ${highest}`)
 document.addEventListener('visibilitychange',renderChanges)
 
 // function that render the changes needed
@@ -90,14 +92,14 @@ function renderChanges(){
 
         const currDate_time = date.getDate();
 
-        const newDate_time = currDate_time + 1;
+        const newDate = new Date();
+        const newDate_time = newDate.getDate();
 
         const diff = newDate_time - currDate_time;
 
         if(diff === 1 && habit.isChecked){
             habit.isChecked = false;
-            const newHabit = [...state.habit, habit]
-            update_state({habit: newHabit})
+            update_state({habit: [...state.habit, habit]})
         }else if(diff > 1){
             habit.streak = 1;
             update_state({habit: [...state.habit, habit]})
@@ -186,8 +188,10 @@ submit_btn?.addEventListener('click', () => {
     hide_hidden_div();
 
     addHabit(titleText, descriptionText, categoryText);
+    document.getElementById('input1').value = ''
+    document.getElementById('input2').value = ''
+    category.selectedIndex = 0
 });
-
 
 function addHabit(title, description, category) {
     const state = getState()
@@ -209,6 +213,7 @@ function addHabit(title, description, category) {
  
 }
   
+
 //my action plan.. 
 // first add date to new habit. this is done
 // make one listener visibilitychange, which will render every time tab shows up.
@@ -216,6 +221,7 @@ function addHabit(title, description, category) {
 
 // function that updates the completion div
 function isComplete(){
+    const state = getState()
     let completed = count_completeion();
     document.getElementById('completed').textContent = `${completed}/${state.total}`
 }

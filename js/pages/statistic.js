@@ -24,7 +24,6 @@ if(theme) theme.addEventListener('click',toggleTheme)
 //sets total number of habits from state.habit
 total_habit.textContent = state.habit.length;
 
-
 //counts the total percentage of habits complete
 let total = state.total;
 let total_completed = state.habit.filter((habit)=> habit.isChecked).length;
@@ -33,6 +32,9 @@ let total_percentage = ((total_completed/total) * 100).toFixed(2);
 document.getElementById("completed_percentage").textContent = `${total_percentage}%`
 
 document.getElementById("total_completed").textContent = `${total_completed}`
+
+// to listen tab change dom refresh
+document.addEventListener('visibilitychange',checkHighest)
 
 
 function create_card(title_text, category_text,idx){
@@ -58,7 +60,7 @@ function create_card(title_text, category_text,idx){
     first_inner_div.append(first_inner_child_div);
 
     // progress bar
-    const progress_bar = create_element('div',['h-2', 'rounded-2xl' ,'bg-black' ,'w-full'])
+    const progress_bar = create_element('div',['h-2', 'rounded-2xl' ,'bg-black' ,'w-full','progress_bar'])
 
     // groupp 3
     const third_bar = create_element('div', ['flex', 'items-center', 'justify-between'])
@@ -77,16 +79,38 @@ function create_card(title_text, category_text,idx){
 
     return wrapper_div;
 
+}
+
+
+function checkHighest(){
+    const state = getState();
+
+    const highest = state.habit[0].streak;
+
+    for(let i = 0; i < state.habit.length; i++){
+        if(state.habit[i].streak > highest){
+            highest = streak.habit[0].streak;
+        }
+    }
+
+    document.getElementById('longest_streak').textContent = highest
 
 }
 
+
 function render(){
+    const state = getState()
     if(state.habit.length > 0){
         console.log('hidden')
         document.getElementById("div_if_no_habit").classList.add('hidden')
         state.habit.forEach((habit,i)=> {
             let card = create_card(habit.title_text, habit.category_text,i);
+            if(state.habit[i].isChecked) {
+                card.querySelector('.progress_bar').classList.add('bg-black')
+            }else{
+                card.querySelector('.progress_bar').classList.add('bg-gray-400/30')
 
+            }
         });
     }
 
