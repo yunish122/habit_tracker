@@ -27,3 +27,16 @@ export function count_completeion(){
     });
     return compeleted;
 }
+
+// helper function to create element
+export function create_element(dom, classes = []){
+    const element = document.createElement(dom);
+    element.classList.add(...classes);
+    return element;
+}
+// create icons
+export function createIcon(attr = [],classes = []){
+    const icons = create_element('i',[...classes]);
+    icons.setAttribute(...attr)
+    return icons
+}

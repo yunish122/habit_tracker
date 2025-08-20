@@ -1,4 +1,4 @@
-import { toggleTheme, renderTheme, count_completeion} from "../helper/utils.js";
+import { toggleTheme, renderTheme, count_completeion, create_element, createIcon} from "../helper/utils.js";
 import { getState, update_state } from "../state.js";
 let intervalId;
 
@@ -166,6 +166,8 @@ function addHabit(title, description, category) {
         description_text: description,
         category_text: category,
         isChecked: false,
+        streak: 1,
+        time: ""
     };
     state.total++;
 
@@ -184,9 +186,9 @@ function isComplete(){
 }
 
 function render() {
-    console.log(state.total)
+    console.log('asdf')
     renderTheme();  
-    isComplete()
+    isComplete();
     if(state.habit && state.habit.length > 0){
         append_div.innerHTML = '';
         state.habit.forEach((habit,i) => {
@@ -257,18 +259,7 @@ function check_input_validity() {
     }
 }
 
-// helper function to create element
-export function create_element(dom, classes = []){
-    const element = document.createElement(dom);
-    element.classList.add(...classes);
-    return element;
-}
-// create icons
-export function createIcon(attr = [],classes = []){
-    const icons = create_element('i',[...classes]);
-    icons.setAttribute(...attr)
-    return icons
-}
+
 // create card UI
 function create_card(titleText, descriptionText, categoryText, idx) {
     const wrapperDiv = create_element('div',['wrapper-div-class','flex', 'flex-col', 'gap-1', 'border', 'border-black/10','dark:border-gray-400/50', 'rounded-xl', 'p-3', 'm-3']);
