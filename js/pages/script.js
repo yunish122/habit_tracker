@@ -2,12 +2,6 @@ import { toggleTheme, renderTheme, count_completeion, create_element, createIcon
 import { getState, update_state } from "../state.js";
 let intervalId;
 
-let state = getState() || {
-    isDark: false,
-    habit: [],
-    total: 0
-};
-
 const hiddenDiv = document.getElementById('hidden_div');
 const overlayDiv = document.getElementById('overlay_div');
 
@@ -83,8 +77,43 @@ document.getElementById('append_div').addEventListener('click',(e)=>{
     })
 })
 
+// listener to listne tab change, dom refresh
+
+document.addEventListener('visibilitychange',renderChanges)
+
+// function that render the changes needed
+function renderChanges(){
+    const state = getState()
+    state.habit.forEach(habit => {
+
+        const date = new Date(habit.time);
+
+        const currDate_time = date.getDate();
+
+        const newDate_time = currDate_time + 1;
+
+        const diff = newDate_time - currDate_time;
+
+        if(diff === 1 && habit.isChecked){
+            habit.isChecked = false;
+            const newHabit = [...state.habit, habit]
+            update_state({habit: newHabit})
+        }else if(diff > 1){
+            habit.streak = 1;
+            update_state({habit: [...state.habit, habit]})
+        }
+        
+    });
+
+}
+function localClear(){
+    localStorage.clear()
+}
+document.getElementById('clearBtn').addEventListener('click',localClear)
+
 //function to edit element
 function edit_element(e){
+    const state = getState()
     show_hidden_edit_div();
 
     const edit_btn = document.getElementById('edit_btn');
@@ -121,6 +150,7 @@ function edit_element(e){
 
 // function to delete element
 function delete_element(e){
+    const state = getState()
     const card = e.target.closest('.wrapper-div-class')
     const idx = card.getAttribute('data-index');
     state.habit.splice(idx,1);
@@ -133,6 +163,7 @@ function delete_element(e){
 
 // updates check box when check box is clied
 function update_checkBox(e){
+    const state = getState()
     const closest = e.target.closest('.wrapper-div-class')
 
     let idx = parseInt(closest.getAttribute('data-index'));
@@ -158,26 +189,30 @@ submit_btn?.addEventListener('click', () => {
 });
 
 
-
 function addHabit(title, description, category) {
-
+    const state = getState()
     const habits = {
         title_text: title,
         description_text: description,
         category_text: category,
         isChecked: false,
         streak: 1,
-        time: ""
+        time: new Date().toISOString()
     };
     state.total++;
 
     update_state({total: state.total});
     update_state({habit: [...state.habit, habits]});
+
+    console.log(state.habit)
     render();
-    
+ 
 }
   
-
+//my action plan.. 
+// first add date to new habit. this is done
+// make one listener visibilitychange, which will render every time tab shows up.
+// this will contain one function renderChange()
 
 // function that updates the completion div
 function isComplete(){
@@ -186,13 +221,13 @@ function isComplete(){
 }
 
 function render() {
-    console.log('asdf')
+    const state = getState()
     renderTheme();  
     isComplete();
     if(state.habit && state.habit.length > 0){
         append_div.innerHTML = '';
         state.habit.forEach((habit,i) => {
-
+            console.log('inside loop')
             let card = create_card(habit.title_text, habit.description_text, habit.category_text, i);
             render_check_uncheck(habit.isChecked, card)
 
