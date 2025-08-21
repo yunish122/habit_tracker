@@ -35,6 +35,7 @@ document.getElementById("total_completed").textContent = `${total_completed}`
 
 // to listen tab change dom refresh
 document.addEventListener('visibilitychange',checkHighest)
+document.addEventListener('DOMContentLoaded',checkHighest)
 
 
 function create_card(title_text, category_text,idx){
@@ -85,11 +86,12 @@ function create_card(title_text, category_text,idx){
 function checkHighest(){
     const state = getState();
 
-    const highest = state.habit[0].streak;
+    let highest = state.habit[0].streak;
 
     for(let i = 0; i < state.habit.length; i++){
         if(state.habit[i].streak > highest){
-            highest = streak.habit[0].streak;
+            highest = state.habit[i].streak;
+            console.log(highest)
         }
     }
 
@@ -101,7 +103,6 @@ function checkHighest(){
 function render(){
     const state = getState()
     if(state.habit.length > 0){
-        console.log('hidden')
         document.getElementById("div_if_no_habit").classList.add('hidden')
         state.habit.forEach((habit,i)=> {
             let card = create_card(habit.title_text, habit.category_text,i);
