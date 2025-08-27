@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 
+
 // navigation
 document.getElementById('statistic').addEventListener('click', () => {
     window.location.href = 'statistic.html';
@@ -62,17 +63,17 @@ document.getElementById('append_div').addEventListener('click',(e)=>{
     }
 
     const right_icon_closest = e.target.closest('.right_icon_div')
-    const right_icon_delete = right_icon_closest.querySelector('.right_icon_delete')
+    const right_icon_delete = right_icon_closest?.querySelector('.right_icon_delete')
 
-    right_icon_closest.querySelector('.right_hidden_div').classList.toggle('hidden')
+    right_icon_closest?.querySelector('.right_hidden_div').classList.toggle('hidden')
     
-    right_icon_delete.addEventListener('click',(e)=>{
+    right_icon_delete?.addEventListener('click',(e)=>{
         delete_element(e)
     })
 
-    const right_icon_edit = right_icon_closest.querySelector('.right_icon_edit');
+    const right_icon_edit = right_icon_closest?.querySelector('.right_icon_edit');
 
-    right_icon_edit.addEventListener('click',(e)=>{
+    right_icon_edit?.addEventListener('click',(e)=>{
         edit_element(e);
     })
 })
@@ -157,10 +158,15 @@ function delete_element(e){
     const idx = card.getAttribute('data-index');
     state.habit.splice(idx,1);
     
-    state.total--;
+    state.total -= 1;
+    console.log(state.total)
     update_state({total: state.total})
     update_state({habit: state.habit});
     card.remove()
+    render()
+    if(state.total === 0){
+        render()
+    }
 }
 
 // updates check box when check box is clied
@@ -203,8 +209,8 @@ function addHabit(title, description, category) {
         streak: 1,
         time: new Date().toISOString()
     };
-    state.total++;
-
+    state.total+=1;
+    console.log(state.total)
     update_state({total: state.total});
     update_state({habit: [...state.habit, habits]});
 
@@ -231,13 +237,16 @@ function render() {
     renderTheme();  
     isComplete();
     if(state.habit && state.habit.length > 0){
-        append_div.innerHTML = '';
+        append_div.querySelector('.hidden_if_no_elem').classList.add('hidden');
+
         state.habit.forEach((habit,i) => {
             console.log('inside loop')
             let card = create_card(habit.title_text, habit.description_text, habit.category_text, i);
             render_check_uncheck(habit.isChecked, card)
 
         });
+    }else{
+        append_div.querySelector('.hidden_if_no_elem').classList.remove('hidden');
     }
     
 
