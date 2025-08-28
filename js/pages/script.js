@@ -237,10 +237,11 @@ function render() {
     renderTheme();  
     isComplete();
     if(state.habit && state.habit.length > 0){
-        append_div.querySelector('.hidden_if_no_elem').classList.add('hidden');
+        append_div.querySelector('.hidden_if_no_elem')?.classList.add('hidden');
+
+        append_div.querySelectorAll('.wrapper-div-class').forEach(card=>card.remove())
 
         state.habit.forEach((habit,i) => {
-            console.log('inside loop')
             let card = create_card(habit.title_text, habit.description_text, habit.category_text, i);
             render_check_uncheck(habit.isChecked, card)
 
