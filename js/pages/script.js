@@ -1,5 +1,5 @@
 import { toggleTheme, renderTheme, count_completeion, create_element, createIcon} from "../helper/utils.js";
-import { getState, update_state } from "../state.js";
+import { getState, update_state, updateHabit } from "../state.js";
 let intervalId;
 
 const hiddenDiv = document.getElementById('hidden_div');
@@ -13,6 +13,7 @@ const append_div = document.getElementById('append_div')
 const hidden_edit_div = document.getElementById('hidden_edit_div')
 
 document.addEventListener('DOMContentLoaded', () => {
+
     if(append_div){
         lucide.createIcons();
         render();    
@@ -56,10 +57,18 @@ document.getElementById('dark_light').addEventListener('click',toggleTheme)
 
 // toggles checkbox
 document.getElementById('append_div').addEventListener('click',(e)=>{    
+    
+    let state = getState()
+    let idx_elem = e.target.closest('.wrapper-div-class')
+    let idx = parseInt(idx_elem.getAttribute("data-index"))
+    let habit = state.habit[idx]
 
+    console.log(idx)
     if(e.target.closest('.left_icon')){
-        console.log(e)
-        update_checkBox(e)
+        updateCheckbox(e)
+        manageStreak(idx, habit, idx_elem)
+        const diff = checkForDiff(habit);
+        checkForWarning(diff)
     }
 
     const right_icon_closest = e.target.closest('.right_icon_div')
@@ -68,54 +77,94 @@ document.getElementById('append_div').addEventListener('click',(e)=>{
     right_icon_closest?.querySelector('.right_hidden_div').classList.toggle('hidden')
     
     right_icon_delete?.addEventListener('click',(e)=>{
-        delete_element(e)
+        deleteElement(e)
     })
 
     const right_icon_edit = right_icon_closest?.querySelector('.right_icon_edit');
 
     right_icon_edit?.addEventListener('click',(e)=>{
-        edit_element(e);
+        editElement(e);
     })
 })
 
-// listener to listne tab change, dom refresh
+// to do overall things erlated with managing streak
+function manageStreak(idx,habit){
 
 
-// console.log(`highest = ${highest}`)
-document.addEventListener('visibilitychange',renderChanges)
 
-// function that render the changes needed
-function renderChanges(){
-    const state = getState()
-    state.habit.forEach(habit => {
+    updateStreak(idx, habit, 1);
 
-        const date = new Date(habit.time);
+    checkForCheckboxReset(idx, 1,habit);
 
-        const currDate_time = date.getDate();
+    render()
+}
 
-        const newDate = new Date();
-        const newDate_time = newDate.getDate();
+function checkForDiff(habit){
+    if(!habit.lastCheckedAt) return null;
+    let date = new Date(habit.lastCheckedAt);
 
-        const diff = newDate_time - currDate_time;
+    let currDate = new Date();
+    
+    let diff = Math.floor((currDate - date)/(1000*60*60*24));
+    return diff;
+}
 
-        if(diff === 1 && habit.isChecked){
-            habit.isChecked = false;
-            update_state({habit: [...state.habit, habit]})
-        }else if(diff > 1){
-            habit.streak = 1;
-            update_state({habit: [...state.habit, habit]})
+function updateStreak(idx,state_habit,diff){
+    if(diff === 0){
+        //dont increment if not checked
+        if(!state_habit.isStreakChecked){
+            state_habit.streak++;
+            state_habit.currDate = new Date();
+            updateHabit(idx,{lastCheckedAt: state_habit.currDate, isStreakChecked: true, streak: state_habit.streak});
         }
-        
-    });
+
+    }else if(diff === 1){
+        //this means no interference made yesterday
+        if(state_habit.isStreakChecked===false){
+            updateHabit(idx,{needWarning: true})
+        }
+
+        else{
+            updateHabit(idx,{isStreakChecked: false})
+        }
+
+    }else if(diff > 1){
+        updateHabit(idx,{streak: 1, isStreakChecked: false, isChecked: false, lastCheckedAt: null})
+    }
+}
+
+function checkForCheckboxReset(idx, diff,habit){
+
+    if(diff === 1 && habit.isStreakChecked){
+        updateHabit(idx,{isStreakChecked: false, isChecked: false})
+    }
 
 }
+
+document.addEventListener('DOMContentLoaded',checkForWarning)
+
+
+function checkForWarning(){
+    let state = getState()
+    
+    console.log(state)
+    state.habit.forEach((element,i) => {
+        let diff = checkForDiff(element)
+        if(!element.isStreakChecked && element.diff === 1){
+            let elem = document.querySelectorAll('.wrapper-div-class')
+
+            warningStyle(element.isStreakChecked, elem[i])
+        }
+    });
+}
+
 function localClear(){
     localStorage.clear()
 }
 document.getElementById('clearBtn').addEventListener('click',localClear)
 
 //function to edit element
-function edit_element(e){
+function editElement(e){
     const state = getState()
     show_hidden_edit_div();
 
@@ -129,7 +178,6 @@ function edit_element(e){
         const category = document.getElementById('edit_input3');
         const categoryText = category.options[category.selectedIndex].text;
         
-        console.log(wrapper_div)
         hide_hidden_edit_div()
 
         const title_text = wrapper_div.querySelector('.left_h1')
@@ -146,20 +194,20 @@ function edit_element(e){
         update_state({habit: state.habit.map((iterable,i)=> idx === i ?  {...iterable
             ,title_text: titleText,
              description_text: descriptionText,
-             category_text: categoryText} : iterable )})
+             category_text: categoryText} : iterable 
+            )})
             
     })
 }
 
 // function to delete element
-function delete_element(e){
+function deleteElement(e){
     const state = getState()
     const card = e.target.closest('.wrapper-div-class')
     const idx = card.getAttribute('data-index');
     state.habit.splice(idx,1);
     
     state.total -= 1;
-    console.log(state.total)
     update_state({total: state.total})
     update_state({habit: state.habit});
     card.remove()
@@ -169,8 +217,8 @@ function delete_element(e){
     }
 }
 
-// updates check box when check box is clied
-function update_checkBox(e){
+// updates check box when check box is add
+function updateCheckbox(e){
     const state = getState()
     const closest = e.target.closest('.wrapper-div-class')
 
@@ -178,10 +226,9 @@ function update_checkBox(e){
     state.habit[idx].isChecked = !state.habit[idx].isChecked;
 
     const square_box = state.habit[idx].isChecked;
-    render_check_uncheck(square_box, closest)
+    toggleCheckbox(square_box, closest)
 
-
-    update_state({habit: state.habit.map((iterable, i)=> i === idx ? {...iterable, isChecked: square_box} : iterable)})
+    updateHabit(idx,{isChecked: square_box, lastCheckedAt: new Date()})
     isComplete()
 }
 
@@ -205,20 +252,21 @@ function addHabit(title, description, category) {
         title_text: title,
         description_text: description,
         category_text: category,
-        isChecked: false,
         streak: 1,
-        time: new Date().toISOString()
+        isChecked: false,
+        lastCheckedAt: null,
+        isStreakChecked: false,
+        needWarning: false
     };
     state.total+=1;
-    console.log(state.total)
     update_state({total: state.total});
     update_state({habit: [...state.habit, habits]});
 
-    console.log(state.habit)
     render();
  
 }
   
+
 
 //my action plan.. 
 // first add date to new habit. this is done
@@ -242,23 +290,21 @@ function render() {
         append_div.querySelectorAll('.wrapper-div-class').forEach(card=>card.remove())
 
         state.habit.forEach((habit,i) => {
-            let card = create_card(habit.title_text, habit.description_text, habit.category_text, i);
-            render_check_uncheck(habit.isChecked, card)
+            let card = create_card(habit.title_text, habit.description_text, habit.category_text,habit.streak, i);
+            toggleCheckbox(habit.isChecked, card)
+
 
         });
+        checkForWarning()
     }else{
         append_div.querySelector('.hidden_if_no_elem').classList.remove('hidden');
     }
     
-
     lucide.createIcons();
 }
 
-
 //function to render checked unchecekd
-function render_check_uncheck(check_uncheck,card){
-
-
+function toggleCheckbox(check_uncheck,card){
     if(check_uncheck){
         card.querySelector('.left_icon').setAttribute('data-lucide','square-check');
         card.classList.add('bg-green-200/20','border-green-300/60','dark:border-green-400/50','dark:bg-black')
@@ -267,13 +313,23 @@ function render_check_uncheck(check_uncheck,card){
 
     }else {
         card.querySelector('.left_icon').setAttribute('data-lucide','square');
-
         card.classList.remove('bg-green-200/20','border-green-300/60','dark:border-green-400/50','dark:bg-black')
         card.querySelector('.left_icon').setAttribute('data-lucide','square');
         card.querySelector('.streak').classList.add('hidden')
 
     }
+
     lucide.createIcons()
+}
+
+function warningStyle(value,card){
+    if(!value){
+        card.classList.add('bg-red-200/20','border-red-300/60','dark:border-red-400/50','dark:bg-black')
+        card.querySelector('.streak').classList.add('border-red-300/60');
+    }else{
+        card.classList.remove('bg-red-200/20','border-red-300/60','dark:border-red-400/50','dark:bg-black')
+        card.querySelector('.streak').classList.remove('border-red-300/60');
+    }
 }
 
 function show_hidden_edit_div(){
@@ -296,9 +352,9 @@ function hide_hidden_div() {
 
 export function validation() {
     clearInterval(intervalId);
-    intervalId = setInterval(check_input_validity, 100);
+    intervalId = setInterval(checkInputValidity, 100);
 }
-function check_input_validity() {
+function checkInputValidity() {
     const input1 = document.getElementById('input1');
     const input2 = document.querySelector('select');
     if (input1.checkValidity() && input2.checkValidity()) {
@@ -312,7 +368,7 @@ function check_input_validity() {
 
 
 // create card UI
-function create_card(titleText, descriptionText, categoryText, idx) {
+function create_card(titleText, descriptionText, categoryText,st, idx) {
     const wrapperDiv = create_element('div',['wrapper-div-class','flex', 'flex-col', 'gap-1', 'border', 'border-black/10','dark:border-gray-400/50', 'rounded-xl', 'p-3', 'm-3']);
     wrapperDiv.setAttribute('data-index',idx)
     wrapperDiv.id = 'wrapper_div'
@@ -331,10 +387,11 @@ function create_card(titleText, descriptionText, categoryText, idx) {
 
     // streak div
     const streak_div = create_element('div',['rounded-2xl','px-3','py-0.5','flex','gap-1','bg-gray-100','items-center','justify-center','hidden','streak','dark:bg-gray-800']);
-    const streak_icon = createIcon(['data-lucide','flame'],['w-4','h-4'])
+    const streak_icon = createIcon(['data-lucide','flame'],['w-4','h-4','streak_icon'])
     streak_icon.setAttribute('stroke','red')
-    const streak = create_element('h1',['text-sm','font-semibold','dark:text-white/80']);
-    streak.textContent = 1;
+    
+    const streak = create_element('h1',['text-sm','font-semibold','dark:text-white/80','streak_no']);
+    streak.textContent = st;
 
     const category_div = create_element('div',['category_div','text-md', 'font-semibold', 'border', 'border-black/10', 'px-3', 'py-0.5', 'rounded-2xl','dark:bg-black','dark:border-gray-400/30']);
     const category_p = create_element('p',['category_p','text-sm','font-semibold','dark:text-white/90']);
@@ -380,6 +437,7 @@ function create_card(titleText, descriptionText, categoryText, idx) {
     wrapperDiv2.append(left_div, right_div);
      description_div.append(description_p);
     wrapperDiv.append(wrapperDiv2, description_div);
+
 
     document.getElementById('append_div').append(wrapperDiv)
     lucide.createIcons()
