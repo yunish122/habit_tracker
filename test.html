@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document 1</title>
+    <link href="./src/output.css" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="js/pages/lexical.js" type="module" defer></script>
+
+</head>
+<body class="w-[100vw] h-[100vh] dark:bg-black ">
+    <!-- hidden div -->
+    <div id="hidden_div" class="hidden top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] border border-black/20 bg-white p-5 rounded-lg">
+        <div class="flex flex-col gap-3">
+            <div class="flex justify-between items-center">
+                <div class="mx-auto">
+                    <h1 class="text-xl font-semibold">Add new habit.</h1>
+                </div>
+                <div id="cross">
+                    <i data-lucide="x"></i>
+                </div>
+            </div> 
+
+            <div>
+                <p class="text-center text-md text-black/60">Create a new habit to track. Give it a clear name and choose a category.</p>
+            </div>
+        </div>
+
+        <!-- input container -->
+        <div class="mt-5 flex flex-col gap-3">
+            <!-- first div -->
+            <div class="flex flex-col gap-2">
+                <div>
+                    <label class="text-md font-semibold">Habit Name</label>
+                </div>
+                <div class="">
+                    <input id="input1" required class="py-3 px-2 border  border-gray-500/40 w-full rounded-md
+                    focus:outline-0 focus:border-1 focus:border-
+                    " placeholder="e.g, Drink 8 glasses of water" type="text">
+                </div>
+            </div>
+            <!-- second div -->
+            <div class="flex flex-col gap-2">
+                <div>
+                    <lable class="flex flex-col gap-3">Description</lable>
+                </div>
+                <div>
+                    <textarea id="input2" placeholder="Add any additional details..." class="h-20 px-2 py-2 border border-gray-500/40 w-full rounded-md"></textarea>
+                </div>            
+            </div>
+            <!-- third div -->
+            <div class="flex flex-col gap-2">
+                <div>
+                    <label class="flex flex-col gap-3" for="category">Categories</label>
+                </div>
+                <select id="input3" required class="h-10 px-2 border border-gray-500/40 w-full rounded-md" name="category" id="category">
+                    <option value="">Please select one!!</option>
+                    <option value="Health">Health & Fitness</option>
+                    <option value="productivity">Productivity</option>
+                    <option value="music">Music</option>
+                    <option value="study">study</option>
+                    <option value="others">Others</option>
+                </select>
+            </div>
+
+        </div>
+
+        <!-- cancel and add habit -->
+         <div class="flex justify-end items-center gap-3 mt-5">
+            <!-- Cancel Button -->
+            <div>
+                <button class="text-md border font-semibold border-gray-500/40 rounded-md px-4 py-2">Cancel</button>
+            </div>
+            <!-- add habit button -->
+            <div>
+                <button id="submit_btn" class="disabled:bg-black/40 disabled:text-white font-semibold text-md border border-gray-500/40 rounded-md px-4 py-2 bg-black text-white">Add Button</button>
+            </div>
+         </div>
+    </div>
+    
+
+        <!--edit hidden div -->
+    <div id="hidden_edit_div" class="hidden top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] border border-black/20 bg-white p-5 rounded-lg">
+        <div class="flex flex-col gap-3">
+            <div class="flex justify-between items-center">
+                <div class="mx-auto">
+                    <h1 class="text-xl font-semibold">Edit habit.</h1>
+                </div>
+                <div id="edit_cross">
+                    <i data-lucide="x"></i>
+                </div>
+            </div> 
+
+            <div>
+                <p class="text-center text-md text-black/60">Create a new habit to track. Give it a clear name and choose a category.</p>
+            </div>
+        </div>
+
+        <!-- input container -->
+        <div class="mt-5 flex flex-col gap-3">
+            <!-- first div -->
+            <div class="flex flex-col gap-2">
+                <div>
+                    <label class="text-md font-semibold">Habit Name</label>
+                </div>
+                <div class="">
+                    <input id="edit_input1" required class="py-3 px-2 border  border-gray-500/40 w-full rounded-md
+                    focus:outline-0 focus:border-1 focus:border-
+                    " placeholder="e.g, Drink 8 glasses of water" type="text">
+                </div>
+            </div>
+            <!-- second div -->
+            <div class="flex flex-col gap-2">
+                <div>
+                    <lable class="flex flex-col gap-3">Description</lable>
+                </div>
+                <div>
+                    <textarea id="edit_input2" placeholder="Add any additional details..." class="h-20 px-2 py-2 border border-gray-500/40 w-full rounded-md"></textarea>
+                </div>            
+            </div>
+            <!-- third div -->
+            <div class="flex flex-col gap-2">
+                <div>
+                    <label class="flex flex-col gap-3" for="category">Categories</label>
+                </div>
+                <select id="edit_input3" required class="h-10 px-2 border border-gray-500/40 w-full rounded-md" name="category" id="category">
+                    <option value="">Please select one!!</option>
+                    <option value="Health">Health & Fitness</option>
+                    <option value="productivity">Productivity</option>
+                    <option value="music">Music</option>
+                    <option value="study">study</option>
+                    <option value="others">Others</option>
+                </select>
+            </div>
+
+        </div>
+
+        <!-- cancel and add habit -->
+         <div class="flex justify-end items-center gap-3 mt-5">
+            <!-- Cancel Button -->
+            <div>
+                <button class="text-md border font-semibold border-gray-500/40 rounded-md px-4 py-2">Cancel</button>
+            </div>
+            <!-- add habit button -->
+            <div>
+                <button id="edit_btn" class="disabled:bg-black/40 disabled:text-white font-semibold text-md border border-gray-500/40 rounded-md px-4 py-2 bg-black text-white">Edit</button>
+            </div>
+         </div>
+    </div>
+    
+    <!-- side bar -->
+    <div class="fixed flex flex-col top-0 left-0 z-50 lg:w-[25%] lg:h-[100vh] lg:top-0 lg:left-0 transform -translate-x-full transition-transform border-r border-gray-300 dark:border-gray-400/40 lg:-translate-x-0 ">
+        <!-- title for small screen -->
+
+        <div class="flex gap-3 items-center mt-5 pb-5 justify-start pl-5 border-b border-gray-300 dark:border-gray-400/40">
+            <div class="w-10 h-10 p-2 dark:bg-white bg-black rounded-md flex items-center ">
+                <i data-lucide="notepad-text" class="text-white dark:text-black mx-auto  h-8" ></i>
+            </div>
+            <div>
+                <h1 class="font-bold text-lg dark:text-white">Habit Tracker</h1>
+                <h2 class="dark:text-white/60 font-light text-sm">Build Better Habits</h2>
+            </div>
+        </div>
+        <!-- buttons -->
+        <div class="flex flex-col items-start justify-center pl-5 pt-5 gap-5  tracking-wide">
+            <button id="today_habit"  class="text-[1rem] dark:text-white font-semibold active:border active:bg-black py-2 pl-2 w-[90%] text-start rounded-[8px] flex gap-2 items-center "><i data-lucide="notepad-text" class="w-5"></i>Today's Habits</button>
+            <button id="statistic" class="text-[1rem] dark:text-white font-semibold active:border active:bg-black py-2 pl-2 w-[90%] text-start rounded-[8px] flex gap-2 items-center "><i class="w-5" data-lucide="chart-bar"></i>Statistic</button>
+            <button id="settings" class="text-[1rem] dark:text-white font-semibold active:border active:bg-black py-2 pl-2 w-[90%] text-start rounded-[8px] flex gap-2 items-center "><i class="w-5" data-lucide="settings"></i>Settings</button>
+        </div>
+        <!-- add new habit -->
+         <div id="add_new_habit_sidebar" class="px-5">
+            <button class="flex gap-3 justify-start items-center w-[100%] mr-5 mt-5  py-3 pl-3  border-1 dark:border-gray-500/40 border-gray-200 rounded-[5px]">
+                <i data-lucide="plus" class="h-4 w-4 dark:text-white"></i>
+                <h1 class="font-semibold text-[1rem] dark:text-white">Add New Habit</h1>
+            </button>        
+         </div>
+             <button id="clearBtn" class="mt-20">Clear</button>
+
+        <div class="mt-auto mb-5">
+            <button id="dark_light" class="dark:text-white flex gap-3 mx-5">
+            <i data-lucide="sun"></i>
+            Light Mode
+            </button>        
+        </div>
+
+    </div>
+
+    <!-- main bar -->
+    <div class="lg:flex lg:justify-end">
+        <div class="lg:w-[75%]" >
+            
+
+            <!-- title for small screen -->
+            <div class="flex justify-between items-center p-5 w-full border-b-1 dark:border-gray-500/40 border-b-black/20 lg:hidden" > 
+                <button class="mx-5">
+                    <i data-lucide="notepad-text" class="dark:text-white"></i>
+                </button>
+                <h1 class="text-lg dark:text-white font-semibold">Habit Tracker</h1>
+
+                <button id="add_new_habit_title" class="dark:text-black bg-black text-white text-sm dark:bg-white rounded-lg px-5 py-3 font-semibold flex items-center gap-3">
+                    <i data-lucide="plus" class="dark:text-black w-5"></i>
+                    Add Your Habit
+                </button>
+                
+                <div class="hidden lg:inline"></div>
+            </div>
+
+
+            <div class="m-5">
+                <div class="flex flex-col items-start justify-start p-5
+                sm:flex-row sm:justify-between sm:items-center
+                ">
+                    <div>
+                        <h1 class="font-bold text-2xl lg:text-4xl dark:text-white">Today's Habits</h1>
+                        <h2 class="font-light text-xl text-black/50 dark:text-white/50">Monday, July 12, 2025</h2>
+                    </div>
+                    <div id="habitsContainer"></div>
+                    <div class="p-3 w-fit rounded-lg mt-4 border border-black/40 flex flex-col items-center dark:border-gray-400/50">
+                        <p id="completed" class="text-2xl font-bold dark:text-white">0/0</p>
+                        <p class="text-lg text-black/50 dark:text-white/50">Completed</p>
+                    </div>
+                </div>    
+            </div>
+
+            <div id="append_div" class="m-5 flex flex-col gap-3" >
+                <div class="hidden_if_no_elem flex flex-col items-center gap-3 border border-black/10 rounded-xl p-5 m-5 dark:border-gray-500/40">
+                    <i data-lucide="notepad-text" class="text-white/50 w-8"></i>
+                    <h1 class="font-semibold text-xl text-black/60 dark:text-white/50">No habits yet</h1>
+                    <h1 class="font-semibold text-md text-black/60 text-center dark:text-white/50">Start Building better habits by adding your first one!</h1>
+                </div> 
+            </div>  
+        </div>        
+
+
+    
+    </div
+
+</body>
+</html>
