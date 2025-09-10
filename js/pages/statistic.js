@@ -10,7 +10,7 @@ document.getElementById('statistic').addEventListener('click', () => {
     window.location.href = 'statistic.html';
 });
 document.getElementById('today_habit').addEventListener('click', () => {
-    window.location.href = 'home-screen.html';
+    window.location.href = 'index.html';
 });
 document.getElementById('settings').addEventListener('click', () => {
     window.location.href = 'setting.html';
