@@ -1,5 +1,6 @@
 import { getState, update_state } from "../state.js";
-import { toggleTheme, create_element } from "../helper/utils.js";
+import {  create_element } from "../helper/utils.js";
+import { toggleTheme } from "../helper/ui.js";
 //dom cache
 const total_habit = document.getElementById('total_habit')
 // states
@@ -37,8 +38,23 @@ document.getElementById("total_completed").textContent = `${total_completed}`
 document.addEventListener('visibilitychange',checkHighest)
 document.addEventListener('DOMContentLoaded',checkHighest)
 
+//add button
+submit_btn?.addEventListener('click', () => {
+    const titleText = document.getElementById('input1').value;
+    const descriptionText = document.getElementById('input2').value;
+    const category = document.getElementById('input3');
+    const categoryText = category.options[category.selectedIndex].text;
 
-function create_card(title_text, category_text,idx){
+    hide_hidden_div();
+
+    addHabitStatPage(titleText, descriptionText, categoryText);
+    document.getElementById('input1').value = ''
+    document.getElementById('input2').value = ''
+    category.selectedIndex = 0
+});
+
+
+function create_card_stat(title_text, category_text,idx){
 
     //wrapper div which will contain all other child class
     const wrapper_div = create_element('div',['flex','flex-col','gap-3'])
@@ -81,12 +97,30 @@ function create_card(title_text, category_text,idx){
     return wrapper_div;
 
 }
+function addHabitStatPage(title, description, category) {
+    const state = getState()
+    const habits = {
+        title_text: title,
+        description_text: description,
+        category_text: category,
+        streak: 0,
+        isChecked: false,
+        lastCheckedAt: null,
+        isStreakChecked: false,
+        needWarning: false,
+    };
+    state.total+=1;
+    update_state({total: state.total});
+    update_state({habit: [...state.habit, habits]});
 
+    render();
+ 
+}
 
 function checkHighest(){
     const state = getState();
-
-    let highest = state.habit[0].streak;
+    
+    let highest = state.habit[0]?.streak;
 
     for(let i = 0; i < state.habit.length; i++){
         if(state.habit[i].streak > highest){
@@ -100,12 +134,12 @@ function checkHighest(){
 }
 
 
-function render(){
+function render_statistic(){
     const state = getState()
     if(state.habit.length > 0){
         document.getElementById("div_if_no_habit").classList.add('hidden')
         state.habit.forEach((habit,i)=> {
-            let card = create_card(habit.title_text, habit.category_text,i);
+            let card = create_card_stat(habit.title_text, habit.category_text,i);
             if(state.habit[i].isChecked) {
                 card.querySelector('.progress_bar').classList.add('bg-black')
             }else{
@@ -117,4 +151,4 @@ function render(){
 
 
 }
-render()
+render_statistic()

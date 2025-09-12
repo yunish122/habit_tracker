@@ -22,3 +22,4 @@ export function updateHabit(idx, updates) {
     update_state({ habit: newHabits });
     return newHabits; // optional, if you want to use the updated array immediately
 }
+
