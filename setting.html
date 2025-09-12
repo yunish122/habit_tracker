@@ -1,12 +1,13 @@
+
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en" class="">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link href="./src/output.css" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
-    <script type="module" src="./js/pages/script.js"  defer></script>
+    <script type="module" src="./js/pages/settings.js"  defer></script>
     <style>
         #overlay{
             position: fixed;
@@ -35,7 +36,7 @@
             </div>
         </div>
 
-        <!-- input container -->
+            <!-- input container -->
         <div class="mt-5 flex flex-col gap-3">
             <!-- first div -->
             <div class="flex flex-col gap-2">
@@ -43,7 +44,7 @@
                     <label class="text-md font-semibold">Habit Name</label>
                 </div>
                 <div class="">
-                    <input id="input1" required class="py-3 px-2 border border-gray-500/40 w-full rounded-md
+                    <input id="input1" required class="py-3 px-2 border  border-gray-500/40 w-full rounded-md
                     focus:outline-0 focus:border-1 focus:border-
                     " placeholder="e.g, Drink 8 glasses of water" type="text">
                 </div>
@@ -54,7 +55,7 @@
                     <lable class="flex flex-col gap-3">Description</lable>
                 </div>
                 <div>
-                    <textarea placeholder="Add any additional details..." class="h-20 px-2 py-2 border border-gray-500/40 w-full rounded-md"></textarea>
+                    <textarea id="input2" placeholder="Add any additional details..." class="h-20 px-2 py-2 border border-gray-500/40 w-full rounded-md"></textarea>
                 </div>            
             </div>
             <!-- third div -->
@@ -62,7 +63,7 @@
                 <div>
                     <label class="flex flex-col gap-3" for="category">Categories</label>
                 </div>
-                <select required class="h-10 px-2 border border-gray-500/40 w-full rounded-md" name="category" id="category">
+                <select id="input3" required class="h-10 px-2 border border-gray-500/40 w-full rounded-md" name="category" id="category">
                     <option value="">Please select one!!</option>
                     <option value="Health">Health & Fitness</option>
                     <option value="productivity">Productivity</option>
@@ -87,6 +88,75 @@
          </div>
     </div>
 
+        <!--edit hidden div -->
+    <div id="hidden_edit_div" class="hidden top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] border border-black/20 bg-white p-5 rounded-lg">
+        <div class="flex flex-col gap-3">
+            <div class="flex justify-between items-center">
+                <div class="mx-auto">
+                    <h1 class="text-xl font-semibold">Edit habit.</h1>
+                </div>
+                <div id="edit_cross">
+                    <i data-lucide="x"></i>
+                </div>
+            </div> 
+
+            <div>
+                <p class="text-center text-md text-black/60">Create a new habit to track. Give it a clear name and choose a category.</p>
+            </div>
+        </div>
+
+        <!-- input container -->
+        <div class="mt-5 flex flex-col gap-3">
+            <!-- first div -->
+            <div class="flex flex-col gap-2">
+                <div>
+                    <label class="text-md font-semibold">Habit Name</label>
+                </div>
+                <div class="">
+                    <input id="edit_input1" required class="py-3 px-2 border  border-gray-500/40 w-full rounded-md
+                    focus:outline-0 focus:border-1 focus:border-
+                    " placeholder="e.g, Drink 8 glasses of water" type="text">
+                </div>
+            </div>
+            <!-- second div -->
+            <div class="flex flex-col gap-2">
+                <div>
+                    <lable class="flex flex-col gap-3">Description</lable>
+                </div>
+                <div>
+                    <textarea id="edit_input2" placeholder="Add any additional details..." class="h-20 px-2 py-2 border border-gray-500/40 w-full rounded-md"></textarea>
+                </div>            
+            </div>
+            <!-- third div -->
+            <div class="flex flex-col gap-2">
+                <div>
+                    <label class="flex flex-col gap-3" for="category">Categories</label>
+                </div>
+                <select id="edit_input3" required class="h-10 px-2 border border-gray-500/40 w-full rounded-md" name="category" id="category">
+                    <option value="">Please select one!!</option>
+                    <option value="Health">Health & Fitness</option>
+                    <option value="productivity">Productivity</option>
+                    <option value="music">Music</option>
+                    <option value="study">study</option>
+                    <option value="others">Others</option>
+                </select>
+            </div>
+
+        </div>
+
+        <!-- cancel and add habit -->
+         <div class="flex justify-end items-center gap-3 mt-5">
+            <!-- Cancel Button -->
+            <div>
+                <button class="text-md border font-semibold border-gray-500/40 rounded-md px-4 py-2">Cancel</button>
+            </div>
+            <!-- add habit button -->
+            <div>
+                <button id="edit_btn" class="disabled:bg-black/40 disabled:text-white font-semibold text-md border border-gray-500/40 rounded-md px-4 py-2 bg-black text-white">Edit</button>
+            </div>
+         </div>
+    </div>
+    
     
     <!-- side bar -->
     <div class="fixed flex flex-col top-0 left-0 z-50 lg:w-[25vw] lg:h-[100vh] lg:top-0 lg:left-0 transform -translate-x-full transition-transform border-r border-gray-500/40 lg:-translate-x-0 ">
@@ -103,9 +173,9 @@
         </div>
         <!-- buttons -->
         <div class="flex flex-col items-start justify-center pl-5 pt-5 gap-5  tracking-wide">
-            <button id="today_habit" class="text-[1rem] dark:text-white font-semibold active:border active:bg-black py-2 pl-2 w-[90%] text-start rounded-[8px] flex gap-2 items-center "><i data-lucide="notepad-text" class="w-5"></i>Today's Habits</button>
-            <button id="statistic" class="text-[1rem] dark:text-white font-semibold active:border active:bg-black py-2 pl-2 w-[90%] text-start rounded-[8px] flex gap-2 items-center "><i class="w-5" data-lucide="chart-bar"></i>Statistic</button>
-            <button id="settings" class="text-[1rem] dark:text-white font-semibold active:border active:bg-black py-2 pl-2 w-[90%] text-start rounded-[8px] flex gap-2 items-center "><i class="w-5" data-lucide="settings"></i>Settings</button>
+            <button id="today_habit"  class="text-[1rem] dark:text-white font-semibold active:border py-2 pl-2 w-[90%] text-start rounded-[8px] flex gap-2 items-center "><i data-lucide="notepad-text" class="w-5"></i>Today's Habits</button>
+            <button id="statistic" class="text-[1rem] dark:text-white font-semibold active:border py-2 pl-2 w-[90%] text-start rounded-[8px] flex gap-2 items-center "><i class="w-5" data-lucide="chart-bar"></i>Statistic</button>
+            <button id="settings" class="text-[1rem] dark:text-white font-semibold active:border py-2 pl-2 w-[90%] text-start rounded-[8px] flex gap-2 items-center "><i class="w-5" data-lucide="settings"></i>Settings</button>
         </div>
         <!-- add new habit -->
         <!-- overlay -->
@@ -157,22 +227,34 @@
         <!-- the two divs -->
 
         <div class="rounded-lg border border-gray-500/40  bg-card text-card-foreground shadow-2xs mx-10" data-v0-t="card">
-            <div class="flex flex-col space-y-1.5 p-6">
-                <h3 class="text-2xl font-semibold leading-none tracking-tight dark:text-white">Categories</h3>
-            </div>
-            <div class="p-6 pt-0">
-                <div class="flex flex-wrap gap-2">
-                    <p class="text-muted-foreground dark:text-white/70">No categories yet</p>
+            <div class="p-5 flex flex-col gap-5">
+                <div class="flex flex-col space-y-1.5 ">
+                    <h3 class="text-2xl font-semibold leading-none tracking-tight dark:text-white">Categories</h3>
+                </div>
+                <!-- <div class=" pt-0">
+                    <div class="flex flex-wrap gap-2">
+                        <p class="text-muted-foreground dark:text-white/70">No categories yet</p>
+                    </div>
+                </div> -->
+                <div id="category_container" class="flex justify-start items-start gap-2">
+
+
                 </div>
             </div>
+
         </div>
 
-        <div class="border-gray-500/40 border rounded-lg mx-10 ">
-            <div class="p-5">
-                <h1 class="dark:text-white font-semibold text-2xl">Manage Habits</h1>
+        <div id="append_div" class="border-gray-500/40 border rounded-lg mx-10 p-5 gap-5 flex flex-col">
+            <div class="flex flex-col">
+                <div >
+                    <h1 class="dark:text-white font-semibold text-2xl">Manage Habits</h1>
+                </div>
+                <div id="toBeHidden" class="hidden text-center p-5 mb-10">
+                    <p class="dark:text-white/70 text-lg text-gray-700">No habits created yet. Add your first habit to get started!</p>
+                </div>
             </div>
-            <div class="text-center p-5 mb-10">
-                <p class="dark:text-white/70">No habits created yet. Add your first habit to get started!</p>
+            <div id="habitContainer">
+                
             </div>
         </div>
     </section>

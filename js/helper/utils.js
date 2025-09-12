@@ -7,15 +7,6 @@ export function renderTheme(){
 }
 
 
-export function toggleTheme(){
-    let state = getState()
-
-    state.isDark = !state.isDark;
-    document.querySelector('html').classList.toggle('dark',state.isDark)
-    if(state){
-        update_state({isDark: state.isDark});
-    }
-}
 
 export function count_completeion(){
     let state = getState();
@@ -40,3 +31,4 @@ export function createIcon(attr = [],classes = []){
     icons.setAttribute(...attr)
     return icons
 }
+
