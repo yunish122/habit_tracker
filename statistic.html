@@ -20,8 +20,8 @@
 <body class="w-[100vw] h-[100vh] dark:bg-black">
 
     <!-- hidden div -->
-    <div id="hidden_div" class="hidden top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] bg-white p-5 rounded-lg">
-        <div class="flex flex-col gap-3">
+    <div id="hidden_div" class="hidden top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] border-black/20 bg-white p-5 rounded-lg">
+                <div class="flex flex-col gap-3">
             <div class="flex justify-between items-center">
                 <div class="mx-auto">
                     <h1 class="text-xl font-semibold">Add new habit.</h1>
@@ -36,7 +36,7 @@
             </div>
         </div>
 
-        <!-- input container -->
+            <!-- input container -->
         <div class="mt-5 flex flex-col gap-3">
             <!-- first div -->
             <div class="flex flex-col gap-2">
@@ -44,7 +44,7 @@
                     <label class="text-md font-semibold">Habit Name</label>
                 </div>
                 <div class="">
-                    <input id="input1" required class="py-3 px-2 border border-gray-500/40 w-full rounded-md
+                    <input id="input1" required class="py-3 px-2 border  border-gray-500/40 w-full rounded-md
                     focus:outline-0 focus:border-1 focus:border-
                     " placeholder="e.g, Drink 8 glasses of water" type="text">
                 </div>
@@ -55,7 +55,7 @@
                     <lable class="flex flex-col gap-3">Description</lable>
                 </div>
                 <div>
-                    <textarea placeholder="Add any additional details..." class="h-20 px-2 py-2 border border-gray-500/40 w-full rounded-md"></textarea>
+                    <textarea id="input2" placeholder="Add any additional details..." class="h-20 px-2 py-2 border border-gray-500/40 w-full rounded-md"></textarea>
                 </div>            
             </div>
             <!-- third div -->
@@ -63,7 +63,7 @@
                 <div>
                     <label class="flex flex-col gap-3" for="category">Categories</label>
                 </div>
-                <select required class="h-10 px-2 border border-gray-500/40 w-full rounded-md" name="category" id="category">
+                <select id="input3" required class="h-10 px-2 border border-gray-500/40 w-full rounded-md" name="category" id="category">
                     <option value="">Please select one!!</option>
                     <option value="Health">Health & Fitness</option>
                     <option value="productivity">Productivity</option>
@@ -87,7 +87,73 @@
             </div>
          </div>
     </div>
-    
+    <div id="hidden_edit_div" class="hidden top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] border border-black/20 bg-white p-5 rounded-lg">
+        <div class="flex flex-col gap-3">
+            <div class="flex justify-between items-center">
+                <div class="mx-auto">
+                    <h1 class="text-xl font-semibold">Edit habit.</h1>
+                </div>
+                <div id="edit_cross">
+                    <i data-lucide="x"></i>
+                </div>
+            </div> 
+
+            <div>
+                <p class="text-center text-md text-black/60">Create a new habit to track. Give it a clear name and choose a category.</p>
+            </div>
+        </div>
+
+        <!-- input container -->
+        <div class="mt-5 flex flex-col gap-3">
+            <!-- first div -->
+            <div class="flex flex-col gap-2">
+                <div>
+                    <label class="text-md font-semibold">Habit Name</label>
+                </div>
+                <div class="">
+                    <input id="edit_input1" required class="py-3 px-2 border  border-gray-500/40 w-full rounded-md
+                    focus:outline-0 focus:border-1 focus:border-
+                    " placeholder="e.g, Drink 8 glasses of water" type="text">
+                </div>
+            </div>
+            <!-- second div -->
+            <div class="flex flex-col gap-2">
+                <div>
+                    <lable class="flex flex-col gap-3">Description</lable>
+                </div>
+                <div>
+                    <textarea id="edit_input2" placeholder="Add any additional details..." class="h-20 px-2 py-2 border border-gray-500/40 w-full rounded-md"></textarea>
+                </div>            
+            </div>
+            <!-- third div -->
+            <div class="flex flex-col gap-2">
+                <div>
+                    <label class="flex flex-col gap-3" for="category">Categories</label>
+                </div>
+                <select id="edit_input3" required class="h-10 px-2 border border-gray-500/40 w-full rounded-md" name="category" id="category">
+                    <option value="">Please select one!!</option>
+                    <option value="Health">Health & Fitness</option>
+                    <option value="productivity">Productivity</option>
+                    <option value="music">Music</option>
+                    <option value="study">study</option>
+                    <option value="others">Others</option>
+                </select>
+            </div>
+
+        </div>
+
+        <!-- cancel and add habit -->
+         <div class="flex justify-end items-center gap-3 mt-5">
+            <!-- Cancel Button -->
+            <div>
+                <button class="text-md border font-semibold border-gray-500/40 rounded-md px-4 py-2">Cancel</button>
+            </div>
+            <!-- add habit button -->
+            <div>
+                <button id="edit_btn" class="disabled:bg-black/40 disabled:text-white font-semibold text-md border border-gray-500/40 rounded-md px-4 py-2 bg-black text-white">Edit</button>
+            </div>
+         </div>
+    </div>
     <!-- side bar -->
     <div class="fixed flex flex-col top-0 left-0 z-50 lg:w-[25%] lg:h-[100vh] lg:top-0 lg:left-0 transform -translate-x-full transition-transform border-r border-gray-300 dark:border-gray-400/40 lg:-translate-x-0 ">
         <!-- sidebar -->

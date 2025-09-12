@@ -4,6 +4,9 @@ import { create_element, createIcon, renderTheme } from "../helper/utils.js";
 import { deleteElement, editElementState } from "../helper/habit.js";
 
 let append_div = document.getElementById('append_div')
+const add_new_habit_title = document.getElementById("add_new_habit_title");
+const add_new_habit_sidebar = document.getElementById("add_new_habit_sidebar");
+const submit_btn = document.getElementById('submit_btn');
 
 document.getElementById('statistic').addEventListener('click', () => {
     window.location.href = 'statistic.html';
@@ -19,7 +22,8 @@ add_new_habit_sidebar.addEventListener('click', () => {
     show_hidden_div();
     validation();
 })
-
+let state = getState()
+console.log(state.isDark)
 add_new_habit_title?.addEventListener('click', () => {
     show_hidden_div();
     validation();
@@ -35,8 +39,14 @@ document.getElementById('edit_cross')?.addEventListener('click', () => {
 })
 
 // toggles theme
-document.getElementById('dark_light').addEventListener('click',toggleTheme);
-
+// toggles theme
+document.getElementById('dark_light').addEventListener('click',()=>{
+    let state = getState()
+    state.isDark = !state.isDark;
+    update_state({isDark: state.isDark})
+    toggleTheme()
+}
+);
 
 submit_btn?.addEventListener('click', () => {
 
@@ -63,7 +73,6 @@ document.addEventListener('DOMContentLoaded',()=>{
         let del_btn = e.target.closest('.delete_div')
         let wrapper_class = e.target.closest('.wrapper-div-class')
         let idx = parseInt(wrapper_class.getAttribute('data-index'))
-        console.log(idx)
         if(edit_btn){
             show_hidden_edit_div()
             hidden_edit_div.setAttribute('data-index',idx)
@@ -215,7 +224,7 @@ function create_card_settings(titleText, categoryText, idx) {
         'ease-in-out',
         'hover:cursor-pointer'
     ]);
-    const editIcon = createIcon(['data-lucide', 'square-pen'], ['w-5']);
+    const editIcon = createIcon(['data-lucide', 'square-pen'], ['w-5','dark:text-white']);
     editDiv.appendChild(editIcon);
 
     // Delete button

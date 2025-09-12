@@ -50,10 +50,11 @@ export function validation() {
 }
 export function toggleTheme(){
     let state = getState()
+    console.log(state.isDark)
+    if(state.isDark){
+        document.querySelector('html').classList.add('dark')
+    }else{
+        document.querySelector('html').classList.remove('dark')
 
-    state.isDark = !state.isDark;
-    document.querySelector('html').classList.toggle('dark',state.isDark)
-    if(state){
-        update_state({isDark: state.isDark});
     }
 }

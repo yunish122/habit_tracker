@@ -3,7 +3,8 @@ import { hide_hidden_div, hide_hidden_edit_div,show_hidden_div,show_hidden_edit_
 import {  renderTheme, count_completeion, create_element, createIcon} from "../helper/utils.js";
 import { getState, update_state, updateHabit } from "../state.js";
 
-
+let state = getState()
+console.log(state.isDark)
 const hiddenDiv = document.getElementById('hidden_div');
 const overlayDiv = document.getElementById('overlay_div');
 
@@ -60,6 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         right_icon_delete?.addEventListener('click',(e)=>{
             deleteElement(e)
+            render_homepage()
         })
 
         right_icon_edit?.addEventListener('click',(e)=>{
@@ -111,7 +113,13 @@ document.getElementById('edit_cross')?.addEventListener('click', () => {
 })
 
 // toggles theme
-document.getElementById('dark_light').addEventListener('click',toggleTheme);
+document.getElementById('dark_light').addEventListener('click',()=>{
+    let state = getState()
+    state.isDark = !state.isDark;
+    update_state({isDark: state.isDark})
+    toggleTheme()
+}
+);
 
 //check for reset 
 

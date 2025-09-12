@@ -1,11 +1,17 @@
 import { getState, update_state } from "../state.js";
 import {  create_element } from "../helper/utils.js";
-import { toggleTheme } from "../helper/ui.js";
+import { hide_hidden_div, hide_hidden_edit_div, show_hidden_div, show_hidden_edit_div, toggleTheme, validation } from "../helper/ui.js";
+import { deleteElement } from "../helper/habit.js";
 //dom cache
 const total_habit = document.getElementById('total_habit')
-// states
-const state = getState();
+const add_new_habit_title = document.getElementById("add_new_habit_title");
+const add_new_habit_sidebar = document.getElementById("add_new_habit_sidebar");
+const submit_btn = document.getElementById('submit_btn');
+const append_div = document.getElementById('append_div')
 
+// states
+let state = getState()
+console.log(state.isDark)
 // listener for page change
 document.getElementById('statistic').addEventListener('click', () => {
     window.location.href = 'statistic.html';
@@ -18,36 +24,85 @@ document.getElementById('settings').addEventListener('click', () => {
 });
 
 
-const theme = document.getElementById('dark_light')
-if(theme) theme.addEventListener('click',toggleTheme)
+// toggles theme
+document.getElementById('dark_light').addEventListener('click',()=>{
+    let state = getState()
+    state.isDark = !state.isDark;
+    update_state({isDark: state.isDark})
+    toggleTheme()
+}
+);
 
 
-//sets total number of habits from state.habit
-total_habit.textContent = state.habit.length;
+// open sidebar form
+add_new_habit_sidebar.addEventListener('click', () => {
+    show_hidden_div();
+    validation();
+})
 
-//counts the total percentage of habits complete
-let total = state.total;
-let total_completed = state.habit.filter((habit)=> habit.isChecked).length;
-let total_percentage = ((total_completed/total) * 100).toFixed(2);
 
-document.getElementById("completed_percentage").textContent = `${total_percentage}%`
 
-document.getElementById("total_completed").textContent = `${total_completed}`
+//hides the hidden div
+document.getElementById('cross')?.addEventListener('click', () => {
+    hide_hidden_div();
+})
+//hides the edit hidden div
+document.getElementById('edit_cross')?.addEventListener('click', () => {
+    hide_hidden_edit_div();
+})
 
 // to listen tab change dom refresh
-document.addEventListener('visibilitychange',checkHighest)
-document.addEventListener('DOMContentLoaded',checkHighest)
+document.addEventListener('visibilitychange',()=>{
+    checkHighest()
+    render_statistic()
+})
+document.addEventListener('DOMContentLoaded',()=>{
+    checkHighest()
+    render_statistic()
+})
+document.addEventListener('DOMContentLoaded',()=>{
+    render_statistic()
 
+    let hidden_edit_div = document.getElementById('hidden_edit_div')
+    
+    document.getElementById('append_div').addEventListener('click',(e)=>{
+        let edit_btn = e.target.closest('.edit_div')
+        let del_btn = e.target.closest('.delete_div')
+        let wrapper_class = e.target.closest('.wrapper-div-class')
+        let idx = parseInt(wrapper_class.getAttribute('data-index'))
+        if(edit_btn){
+            show_hidden_edit_div()
+            hidden_edit_div.setAttribute('data-index',idx)
+        }
+        if(del_btn){
+            deleteElement(e)
+            render_statistic()
+        }
+        
+    })
+
+    document.getElementById('hidden_edit_div').addEventListener('click',(e)=>{
+        let save_btn = e.target.closest('#edit_btn')
+        let idx = parseInt(hidden_edit_div.getAttribute('data-index'))
+        if(save_btn){
+            editElementState(idx)
+        }
+        render_statistic()
+
+    })
+})
 //add button
 submit_btn?.addEventListener('click', () => {
     const titleText = document.getElementById('input1').value;
-    const descriptionText = document.getElementById('input2').value;
+    console.log(titleText)
+    const descriptionText = document.getElementById('input2')?.value;
     const category = document.getElementById('input3');
     const categoryText = category.options[category.selectedIndex].text;
 
     hide_hidden_div();
 
     addHabitStatPage(titleText, descriptionText, categoryText);
+    render_statistic()
     document.getElementById('input1').value = ''
     document.getElementById('input2').value = ''
     category.selectedIndex = 0
@@ -64,11 +119,11 @@ function create_card_stat(title_text, category_text,idx){
 
     const first_inner_child_div = create_element('div',['flex' ,'items-center' ,'gap-4'])
 
-    const titleText = create_element('h1',["text-xl" ,"font-medium"])
+    const titleText = create_element('h1',["text-xl" ,"font-medium",'dark:text-white'])
     titleText.textContent = title_text;
 
     const category_div = create_element('div',['border', 'border-gray-400/50', "rounded-2xl", 'px-3'])
-    const categoryText = create_element('h1',['text-sm', 'font-semibold'])
+    const categoryText = create_element('h1',['text-sm', 'font-semibold','dark:text-white'])
     categoryText.textContent = category_text;
 
     //group which contains title text 
@@ -82,10 +137,10 @@ function create_card_stat(title_text, category_text,idx){
     // groupp 3
     const third_bar = create_element('div', ['flex', 'items-center', 'justify-between'])
 
-    const track_text = create_element('h1', ['text-sm', 'text-gray-900/70'])
+    const track_text = create_element('h1', ['text-sm', 'text-gray-900/70','dark:text-white/80'])
     track_text.textContent = 'Tracked for 1 days';
 
-    const completed_text = create_element('h1', ['text-sm', 'text-gray-900/70'])
+    const completed_text = create_element('h1', ['text-sm', 'text-gray-900/70','dark:text-white/80'])
     completed_text.textContent = '1 completions';
     //group 3
     third_bar.append(track_text,completed_text);
@@ -112,8 +167,6 @@ function addHabitStatPage(title, description, category) {
     state.total+=1;
     update_state({total: state.total});
     update_state({habit: [...state.habit, habits]});
-
-    render();
  
 }
 
@@ -136,19 +189,31 @@ function checkHighest(){
 
 function render_statistic(){
     const state = getState()
+    checkHighest()
+    //sets total number of habits from state.habit
+    total_habit.textContent = state.habit.length;
+
+    //counts the total percentage of habits complete
+    let total = state.total;
+    let total_completed = state.habit.filter((habit)=> habit.isChecked).length;
+    let total_percentage = ((total_completed/total) * 100).toFixed(2);
+
+    document.getElementById("completed_percentage").textContent = `${total_percentage}%`
+
+    document.getElementById("total_completed").textContent = `${total_completed}`
+
     if(state.habit.length > 0){
         document.getElementById("div_if_no_habit").classList.add('hidden')
         state.habit.forEach((habit,i)=> {
             let card = create_card_stat(habit.title_text, habit.category_text,i);
             if(state.habit[i].isChecked) {
-                card.querySelector('.progress_bar').classList.add('bg-black')
+                card.querySelector('.progress_bar').classList.add('bg-black','dark:bg-white')
             }else{
                 card.querySelector('.progress_bar').classList.add('bg-gray-400/30')
 
             }
         });
     }
-
+    toggleTheme()
 
 }
-render_statistic()
